@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="dark light">
+    <meta name="theme-color" content="#0f172a">
+    <title>تحدي اليوم | مغامرات الرياضيات</title>
+    <meta name="description" content="تحدّي يومي من 10 أسئلة رياضيات متنوّعة يتغيّر كل يوم: ضرب، قيمة منزلية، أرقام مفقودة، وصيغ تحليلية — مع مكافأة أول إكمال.">
+    <link rel="icon" type="image/svg+xml" href="assets/images/favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/main.css">
+    <style>
+        .dc-qcard { max-width: 720px; margin-inline: auto; }
+        .dc-qtext { font-size: clamp(1.2rem, 3.5vw, 1.6rem); font-weight: 900; text-align: center; margin: 14px 0 18px; min-height: 64px; display: flex; align-items: center; justify-content: center; }
+        .dc-options { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+        @media (max-width: 520px) { .dc-options { grid-template-columns: 1fr; } }
+        .dc-opt {
+            min-height: 56px; padding: 14px; border-radius: 14px;
+            border: 2px solid var(--surface-border); background: var(--surface);
+            color: var(--text); font-family: inherit; font-size: 1.1rem; font-weight: 800;
+            cursor: pointer; transition: all .15s;
+        }
+        .dc-opt:hover:not(:disabled) { border-color: var(--accent); transform: translateY(-2px); }
+        .dc-opt.is-correct { background: var(--success-soft); border-color: var(--success); }
+        .dc-opt.is-wrong { background: var(--danger-soft); border-color: var(--danger); }
+        .dc-opt:disabled { cursor: default; }
+        .dc-meta { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; align-items: center; }
+        .dc-history { display: grid; grid-template-columns: repeat(auto-fit, minmax(88px, 1fr)); gap: 8px; }
+        .dc-day { background: var(--surface); border: 1px solid var(--surface-border); border-radius: 10px; padding: 8px; text-align: center; font-size: .72rem; color: var(--text-dim); }
+        .dc-day b { display: block; font-size: .95rem; color: var(--text); }
+        .dc-day.is-done { border-color: var(--success); }
+        .dc-result { text-align: center; }
+        .dc-score { font-size: 3rem; font-weight: 900; color: var(--accent); }
+    </style>
+</head>
+<body>
+    <a class="skip-link" href="#main">تخطَّ إلى المحتوى</a>
+
+    <nav class="ma-nav" aria-label="التنقل الرئيسي">
+        <div class="container ma-nav__inner">
+            <a class="ma-nav__brand" href="index.html">
+                <span class="logo" aria-hidden="true">√</span>
+                <span>مغامرات الرياضيات<small>Math Adventures</small></span>
+            </a>
+            <button type="button" class="ma-nav__toggle" aria-expanded="false" aria-controls="navLinks">
+                <i class="fa-solid fa-bars" aria-hidden="true"></i> القائمة
+            </button>
+            <ul class="ma-nav__links" id="navLinks">
+                <li><a href="index.html" data-key="home"><i class="fa-solid fa-house" aria-hidden="true"></i> الرئيسية</a></li>
+                <li><a href="multiplication-heroes.html" data-key="mult"><i class="fa-solid fa-crown" aria-hidden="true"></i> أبطال جدول الضرب</a></li>
+                <li><a href="place-value-adventure.html" data-key="place"><i class="fa-solid fa-layer-group" aria-hidden="true"></i> الأعداد والمنازل</a></li>
+                <li><a href="daily-challenge.html" data-key="daily"><i class="fa-solid fa-calendar-day" aria-hidden="true"></i> تحدي اليوم</a></li>
+                <li><a href="worksheets.html" data-key="worksheets"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> أوراق العمل</a></li>
+                <li><a href="achievements.html" data-key="achievements"><i class="fa-solid fa-medal" aria-hidden="true"></i> إنجازاتي</a></li>
+                <li><a href="settings.html" data-key="settings"><i class="fa-solid fa-gear" aria-hidden="true"></i> الإعدادات</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <header class="page-hero container">
+        <p class="ma-badge mb-1"><i class="fa-solid fa-calendar-day" aria-hidden="true"></i> يتغيّر كل يوم</p>
+        <h1>تحدي اليوم</h1>
+        <p class="text-muted">10 أسئلة متنوّعة ثابتة في اليوم نفسه — أكملها لتحصل على مكافأة أول إكمال، وحاول سلسلة الأيام!</p>
+    </header>
+
+    <main id="main" class="container">
+        <section class="ma-card dc-qcard" aria-live="polite">
+            <!-- START VIEW -->
+            <div id="viewStart">
+                <div class="text-center">
+                    <div class="ma-card__icon" style="margin-inline:auto" aria-hidden="true"><i class="fa-solid fa-calendar-check"></i></div>
+                    <h2 style="font-size:1.15rem">أسئلة اليوم — <span id="todayLabel"></span></h2>
+                    <p class="text-muted" style="font-size:.9rem">
+                        10 أسئلة من 5 أنواع: جدول الضرب، القيمة المنزلية، الأرقام المفقودة، مقارنة الأعداد، والصيغة التحليلية.
+                        النتيجة 7/10 فأكثر في أول إكمال = <b style="color:var(--accent)">+10 نجوم</b>.
+                    </p>
+                    <div class="ma-stats mt-2" id="startStats">
+                        <div class="ma-stat"><span class="ma-stat__value" id="prevScore">—</span><span class="ma-stat__label">نتيجتك اليوم</span></div>
+                        <div class="ma-stat"><span class="ma-stat__value" id="streakDays">0</span><span class="ma-stat__label">سلسلة الأيام</span></div>
+                        <div class="ma-stat"><span class="ma-stat__value" id="rewardState">—</span><span class="ma-stat__label">مكافأة اليوم</span></div>
+                    </div>
+                    <div class="flex mt-2" style="justify-content:center">
+                        <button type="button" class="ma-btn" id="btnStart"><i class="fa-solid fa-play" aria-hidden="true"></i> ابدأ التحدي</button>
+                        <button type="button" class="ma-btn ma-btn--secondary" id="btnRetry" hidden><i class="fa-solid fa-rotate-right" aria-hidden="true"></i> أعد المحاولة</button>
+                    </div>
+                    <p class="text-dim mt-1" style="font-size:.75rem" id="rewardHint" hidden>
+                        نتيجتك السابقة لم تحقق المكافأة — حاول مرة أخرى، النتيجة الأفضل تُحفظ.
+                    </p>
+                </div>
+
+                <div class="section-title" style="font-size:.95rem"><i class="fa-solid fa-clock-rotate-left" aria-hidden="true"></i> آخر 7 أيام</div>
+                <div class="dc-history" id="history"></div>
+            </div>
+
+            <!-- PLAY VIEW -->
+            <div id="viewPlay" hidden>
+                <div class="dc-meta mb-1">
+                    <span class="ma-badge" id="qCounter">1 / 10</span>
+                    <span class="ma-badge ma-badge--success" id="qScore">0 نقطة</span>
+                </div>
+                <div class="ma-progress mb-2"><div class="ma-progress__bar" id="qBar" style="width:0%"></div></div>
+                <div class="dc-qtext" id="qText">…</div>
+                <div class="dc-options" id="qOptions"></div>
+                <p class="text-center text-dim mt-1" id="qFeedback" style="min-height:24px;font-size:.85rem;font-weight:700" aria-live="assertive"></p>
+            </div>
+
+            <!-- RESULT VIEW -->
+            <div id="viewResult" hidden>
+                <div class="dc-result">
+                    <div class="ma-card__icon" style="margin-inline:auto" aria-hidden="true"><i class="fa-solid fa-trophy"></i></div>
+                    <div class="dc-score" id="finalScore">0/10</div>
+                    <p class="text-muted" id="finalMsg"></p>
+                    <p class="ma-badge" id="finalReward" hidden></p>
+                    <div class="flex mt-2" style="justify-content:center">
+                        <button type="button" class="ma-btn" id="btnAgain"><i class="fa-solid fa-rotate-right" aria-hidden="true"></i> حاول مرة أخرى</button>
+                        <a class="ma-btn ma-btn--secondary" href="index.html"><i class="fa-solid fa-house" aria-hidden="true"></i> الرئيسية</a>
+                        <a class="ma-btn ma-btn--ghost" href="achievements.html"><i class="fa-solid fa-medal" aria-hidden="true"></i> إنجازاتي</a>
+                    </div>
+                    <div class="section-title" style="font-size:.95rem;justify-content:center"><i class="fa-solid fa-list-check" aria-hidden="true"></i> مراجعة الإجابات</div>
+                    <div id="review" style="text-align:start"></div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="ma-footer">
+        <div class="container">
+            <nav aria-label="روابط التذييل">
+                <a href="index.html">الرئيسية</a>
+                <a href="multiplication-heroes.html">جدول الضرب</a>
+                <a href="place-value-adventure.html">القيمة المنزلية</a>
+                <a href="worksheets.html">أوراق العمل</a>
+            </nav>
+            <p>Math Adventures | مغامرات الرياضيات © <span data-year></span></p>
+        </div>
+    </footer>
+
+    <script src="assets/js/store.js"></script>
+    <script src="assets/js/audio.js"></script>
+    <script src="assets/js/ui.js"></script>
+    <script>
+    (function () {
+        'use strict';
+        MA.initShell('daily');
+
+        var TOTAL = 10;
+        var REWARD_THRESHOLD = 7;
+        var REWARD_STARS = 10;
+        var today = MA.todayKey();
+        var questions = [];
+        var idx = 0, score = 0, answered = false, answers = [];
+
+        /* ---------- seeded PRNG (deterministic per day) ---------- */
+        function hashStr(s) {
+            var h = 2166136261;
+            for (var i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); }
+            return h >>> 0;
+        }
+        function mulberry32(a) {
+            return function () {
+                a |= 0; a = a + 0x6D2B79F5 | 0;
+                var t = Math.imul(a ^ a >>> 15, 1 | a);
+                t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+                return ((t ^ t >>> 14) >>> 0) / 4294967296;
+            };
+        }
+        function ri(rng, min, max) { return Math.floor(rng() * (max - min + 1)) + min; }
+        function pick(rng, arr) { return arr[Math.floor(rng() * arr.length)]; }
+        function shuffle(rng, arr) {
+            for (var i = arr.length - 1; i > 0; i--) {
+                var j = Math.floor(rng() * (i + 1));
+                var tmp = arr[i]; arr[i] = arr[j]; arr[j] = tmp;
+            }
+            return arr;
+        }
+        // unique distractors around a correct value (never equal to it)
+        function numOptions(rng, correct, spread) {
+            var set = [correct];
+            var guard = 0;
+            while (set.length < 4 && guard++ < 60) {
+                var delta = ri(rng, 1, spread || 12);
+                if (rng() < 0.5) delta = -delta;
+                var v = correct + delta;
+                if (v >= 0 && set.indexOf(v) === -1) set.push(v);
+            }
+            var k = 1;
+            while (set.length < 4) {
+                var up = correct + k * 3 + 1;
+                var down = correct - k * 3 - 1;
+                if (up >= 0 && set.indexOf(up) === -1) set.push(up);
+                else if (down >= 0 && set.indexOf(down) === -1) set.push(down);
+                k++;
+                if (k > 100000) break;
+            }
+            var opts = set.map(function (v) { return { text: MA.fmt(v), value: v }; });
+            shuffle(rng, opts);
+            return opts;
+        }
+        function answerIndex(opts, value) {
+            for (var i = 0; i < opts.length; i++) if (opts[i].value === value) return i;
+            return 0;
+        }
+
+        /* ---------- question builders (all bounded) ---------- */
+        function qMult(rng) {
+            var a = ri(rng, 2, 12), b = ri(rng, 2, 12), correct = a * b;
+            var opts = numOptions(rng, correct, 14);
+            return { type: 'ضرب', text: MA.fmt(a) + ' × ' + MA.fmt(b) + ' = ؟', opts: opts, ans: answerIndex(opts, correct) };
+        }
+        function qPlace(rng) {
+            var digits = ri(rng, 3, 6);
+            var n = 0;
+            for (var i = 0; i < digits; i++) n = n * 10 + (i === 0 ? ri(rng, 1, 9) : ri(rng, 0, 9));
+            var pos = ri(rng, 0, digits - 1); // 0 = ones
+            var d = Math.floor(n / Math.pow(10, pos)) % 10;
+            if (d === 0) { d = ri(rng, 1, 9); n += d * Math.pow(10, pos); } // avoid zero-valued digit
+            var value = d * Math.pow(10, pos);
+            var names = ['الآحاد', 'العشرات', 'المئات', 'الألوف', 'العشرات من الألف', 'المئات من الألف'];
+            var opts = numOptions(rng, value, Math.max(9, value - 1));
+            return {
+                type: 'قيمة منزلية',
+                text: 'ما قيمة الرقم ' + MA.digits(d) + ' في العدد ' + MA.fmt(n) + '؟ (' + (names[pos] || 'منزلة') + ')',
+                opts: opts, ans: answerIndex(opts, value)
+            };
+        }
+        function qMissing(rng) {
+            if (rng() < 0.5) { // missing addend: x + a = b
+                var a = ri(rng, 5, 60), x = ri(rng, 3, 50), b = a + x;
+                var opts = numOptions(rng, x, 9);
+                return { type: 'رقم مفقود', text: '؟ + ' + MA.fmt(a) + ' = ' + MA.fmt(b), opts: opts, ans: answerIndex(opts, x) };
+            } // missing factor: a × x = b
+            var a2 = ri(rng, 2, 12), x2 = ri(rng, 2, 12), b2 = a2 * x2;
+            var opts2 = numOptions(rng, x2, 6);
+            return { type: 'رقم مفقود', text: MA.fmt(a2) + ' × ؟ = ' + MA.fmt(b2), opts: opts2, ans: answerIndex(opts2, x2) };
+        }
+        function qBigger(rng) {
+            var a = ri(rng, 10, 9999);
+            var equal = rng() < 0.12;
+            var b;
+            if (equal) {
+                b = a;
+            } else {
+                b = ri(rng, 10, 9999);
+                while (b === a) b = ri(rng, 10, 9999);
+            }
+            var opts = [
+                { text: 'العدد الأول (' + MA.fmt(a) + ')', value: 'a' },
+                { text: 'العدد الثاني (' + MA.fmt(b) + ')', value: 'b' },
+                { text: 'متساويان', value: 'eq' }
+            ];
+            shuffle(rng, opts);
+            var ansVal = a > b ? 'a' : (b > a ? 'b' : 'eq');
+            var ans = 0;
+            for (var i = 0; i < opts.length; i++) if (opts[i].value === ansVal) ans = i;
+            return { type: 'مقارنة', text: 'أيهما أكبر: ' + MA.fmt(a) + ' أم ' + MA.fmt(b) + '؟', opts: opts, ans: ans };
+        }
+        function qExpanded(rng) {
+            var digits = ri(rng, 3, 6);
+            var n = 0, parts = [];
+            for (var i = 0; i < digits; i++) {
+                var d = (i === 0) ? ri(rng, 1, 9) : ri(rng, 0, 9);
+                n = n * 10 + d;
+                if (d !== 0) parts.push(d * Math.pow(10, digits - 1 - i));
+            }
+            var correctStr = parts.map(function (p) { return MA.fmt(p); }).join(' + ');
+            var wrongStrs = [];
+            var broken = parts.slice();
+            if (broken.length > 1) {
+                var k = ri(rng, 0, broken.length - 1);
+                broken[k] = broken[k] + Math.pow(10, ri(rng, 1, 3));
+                var s2 = broken.map(function (p) { return MA.fmt(p); }).join(' + ');
+                if (s2 !== correctStr && wrongStrs.indexOf(s2) === -1) wrongStrs.push(s2);
+            }
+            var fg = 0;
+            while (wrongStrs.length < 3 && fg++ < 60) {
+                var p2 = parts.slice();
+                shuffle(rng, p2);
+                var idx2 = Math.floor(rng() * p2.length);
+                p2[idx2] = p2[idx2] + Math.pow(10, ri(rng, 1, 3));
+                var s3 = p2.map(function (p) { return MA.fmt(p); }).join(' + ');
+                if (s3 !== correctStr && wrongStrs.indexOf(s3) === -1) wrongStrs.push(s3);
+            }
+            var fbTok = 1;
+            while (wrongStrs.length < 3) {
+                var fb = correctStr.split(' + ').reverse().join(' + ');
+                if (fb === correctStr || wrongStrs.indexOf(fb) !== -1) {
+                    fb = correctStr + ' + ' + MA.fmt(fbTok);
+                    fbTok++;
+                }
+                if (fb !== correctStr && wrongStrs.indexOf(fb) === -1) wrongStrs.push(fb);
+                if (fbTok > 100000) break;
+            }
+            var opts = [{ text: correctStr, value: 1 }].concat(wrongStrs.map(function (s) { return { text: s, value: 0 }; }));
+            shuffle(rng, opts);
+            var ans = 0;
+            for (var j = 0; j < opts.length; j++) if (opts[j].value === 1) ans = j;
+            return { type: 'صيغة تحليلية', text: 'ما الصيغة التحليلية للعدد ' + MA.fmt(n) + '؟', opts: opts, ans: ans };
+        }
+
+        function buildDaily(dateKey) {
+            var rng = mulberry32(hashStr('MA-DAILY-v1-' + dateKey));
+            var builders = [qMult, qPlace, qMissing, qBigger, qExpanded];
+            var qs = [];
+            for (var i = 0; i < TOTAL; i++) qs.push(builders[i % builders.length](rng));
+            // interleave deterministically: rotate start offset by seed
+            var off = ri(rng, 0, 4);
+            return qs.slice(off).concat(qs.slice(0, off));
+        }
+
+        /* ---------- history / streak ---------- */
+        function last7Days() {
+            var out = [];
+            for (var i = 6; i >= 0; i--) {
+                var d = new Date();
+                d.setDate(d.getDate() - i);
+                var m = String(d.getMonth() + 1).padStart(2, '0');
+                var day = String(d.getDate()).padStart(2, '0');
+                out.push(d.getFullYear() + '-' + m + '-' + day);
+            }
+            return out;
+        }
+        function streak() {
+            var map = MAStore.getDailyMap();
+            var count = 0;
+            var d = new Date();
+            if (!map[d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0')]) {
+                d.setDate(d.getDate() - 1); // yesterday may still keep the streak alive
+            }
+            for (;;) {
+                var key = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+                if (map[key]) { count++; d.setDate(d.getDate() - 1); }
+                else break;
+                if (count > 3650) break;
+            }
+            return count;
+        }
+
+        function renderStart() {
+            document.getElementById('todayLabel').textContent = MA.digits(new Date().toLocaleDateString('ar-EG-u-nu-latn', { weekday: 'long', day: 'numeric', month: 'long' }));
+            var rec = MAStore.getDaily(today);
+            document.getElementById('prevScore').textContent = rec ? MA.fmt(rec.score) + '/' + MA.fmt(rec.total) : '—';
+            document.getElementById('streakDays').textContent = MA.fmt(streak());
+            var rewarded = MAStore.dailyRewarded(today);
+            document.getElementById('rewardState').innerHTML = rewarded
+                ? '<i class="fa-solid fa-check"></i> مكتسبة'
+                : 'متاحة';
+            document.getElementById('btnRetry').hidden = !rec;
+            document.getElementById('rewardHint').hidden = rewarded || !rec || rec.score >= REWARD_THRESHOLD;
+
+            var hist = document.getElementById('history');
+            hist.textContent = '';
+            var map = MAStore.getDailyMap();
+            last7Days().forEach(function (key) {
+                var cell = document.createElement('div');
+                cell.className = 'dc-day' + (map[key] ? ' is-done' : '');
+                var b = document.createElement('b');
+                b.textContent = map[key] ? (MA.fmt(map[key].score) + '/' + MA.fmt(map[key].total)) : '—';
+                cell.appendChild(b);
+                cell.appendChild(document.createTextNode(key.slice(5).replace('-', '/')));
+                hist.appendChild(cell);
+            });
+        }
+
+        function showView(name) {
+            document.getElementById('viewStart').hidden = name !== 'start';
+            document.getElementById('viewPlay').hidden = name !== 'play';
+            document.getElementById('viewResult').hidden = name !== 'result';
+        }
+
+        function renderQuestion() {
+            var q = questions[idx];
+            document.getElementById('qCounter').textContent = (idx + 1) + ' / ' + TOTAL;
+            document.getElementById('qScore').textContent = MA.fmt(score) + ' نقطة';
+            document.getElementById('qBar').style.width = Math.round((idx / TOTAL) * 100) + '%';
+            document.getElementById('qText').textContent = q.type + ' — ' + q.text;
+            document.getElementById('qFeedback').textContent = '';
+            var box = document.getElementById('qOptions');
+            box.textContent = '';
+            q.opts.forEach(function (o, i) {
+                var btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'dc-opt';
+                btn.textContent = o.text;
+                btn.addEventListener('click', function () { onAnswer(i, btn); });
+                box.appendChild(btn);
+            });
+            answered = false;
+        }
+
+        function onAnswer(i, btn) {
+            if (answered) return;
+            answered = true;
+            var q = questions[idx];
+            var correct = i === q.ans;
+            var buttons = document.getElementById('qOptions').children;
+            for (var k = 0; k < buttons.length; k++) buttons[k].disabled = true;
+            buttons[q.ans].classList.add('is-correct');
+            if (!correct) btn.classList.add('is-wrong');
+            if (correct) { score++; MA.play('correct'); }
+            else { MA.play('wrong'); }
+            answers.push({ q: q, chosen: i, correct: correct });
+            MAStore.recordAnswer(correct, 'daily');
+            document.getElementById('qScore').textContent = MA.fmt(score) + ' نقطة';
+            document.getElementById('qFeedback').textContent =
+                correct ? 'أحسنت! إجابة صحيحة ✓' : 'الإجابة الصحيحة: ' + q.opts[q.ans].text;
+
+            setTimeout(function () {
+                idx++;
+                if (idx < TOTAL) renderQuestion();
+                else finish();
+            }, correct ? 750 : 1500);
+        }
+
+        function finish() {
+            document.getElementById('qBar').style.width = '100%';
+            document.getElementById('finalScore').textContent = MA.fmt(score) + '/' + MA.fmt(TOTAL);
+            var badge = document.getElementById('finalReward');
+            badge.hidden = true;
+            badge.textContent = '';
+            badge.className = 'ma-badge';
+            var prev = MAStore.getDaily(today);
+            var isNew = !prev || score > prev.score;
+            var canReward = !MAStore.dailyRewarded(today) && score >= REWARD_THRESHOLD;
+            var newly = MAStore.setDaily(today, score, TOTAL, canReward);
+            if (canReward) {
+                MAStore.addStars(REWARD_STARS);
+                badge.hidden = false;
+                badge.className = 'ma-badge';
+                badge.innerHTML = '<i class="fa-solid fa-star" aria-hidden="true"></i> +' + MA.digits(REWARD_STARS) + ' نجوم — مكافأة أول إكمال!';
+                MA.play('fanfare');
+                MA.celebrate();
+                newly = newly.concat(MAStore.checkAchievements());
+            } else if (score >= REWARD_THRESHOLD) {
+                badge.hidden = false;
+                badge.className = 'ma-badge ma-badge--success';
+                badge.innerHTML = '<i class="fa-solid fa-check" aria-hidden="true"></i> نتيجة ممتازة (مكافأة اليوم مكتسبة سابقاً)';
+            }
+            document.getElementById('finalMsg').textContent =
+                score >= 8 ? 'ممتاز! أنت جاهز لتحديات أصعب.' :
+                score >= REWARD_THRESHOLD ? 'جيد جداً — أعد المحاولة لتحسين نتيجتك.' :
+                'واصل التدريب وستتحسن نتيجتك غداً — الأسئلة نفسها اليوم للمقارنة.';
+            MAStore.recordRound(0);
+            MAStore.recordBestScore('daily', score);
+            var rev = document.getElementById('review');
+            rev.textContent = '';
+            answers.forEach(function (a, i) {
+                var row = document.createElement('div');
+                row.className = 'ws-question';
+                row.innerHTML = '';
+                var t = document.createElement('div');
+                t.className = 'q-text';
+                t.textContent = (a.correct ? '✓ ' : '✗ ') + (i + 1) + '. ' + a.q.text;
+                t.style.color = a.correct ? 'var(--success)' : 'var(--danger)';
+                row.appendChild(t);
+                var d = document.createElement('div');
+                d.className = 'text-dim';
+                d.style.fontSize = '.8rem';
+                d.textContent = 'إجابتك: ' + a.q.opts[a.chosen].text +
+                    (a.correct ? '' : ' — الصحيحة: ' + a.q.opts[a.q.ans].text);
+                row.appendChild(d);
+                rev.appendChild(row);
+            });
+            MA.notifyNewAchievements(newly);
+            showView('result');
+        }
+
+        function startRound() {
+            questions = buildDaily(today);
+            idx = 0; score = 0; answers = [];
+            MA.play('click');
+            showView('play');
+            renderQuestion();
+        }
+
+        document.getElementById('btnStart').addEventListener('click', startRound);
+        document.getElementById('btnRetry').addEventListener('click', startRound);
+        document.getElementById('btnAgain').addEventListener('click', startRound);
+
+        renderStart();
+        showView('start');
+
+        window.__MA_DAILY__ = {
+            build: buildDaily,
+            start: startRound,
+            streak: streak,
+            answerCurrent: function (i) { onAnswer(i, { classList: { add: function () {} } }); },
+            state: function () { return { questions: questions, idx: idx, score: score, answers: answers }; },
+            answered: function () { return answered; },
+            qBigger: qBigger,
+            qExpanded: qExpanded,
+            numOptions: numOptions,
+            ri: ri,
+            mulberry32: mulberry32,
+            hashStr: hashStr,
+            TOTAL: TOTAL,
+            REWARD_THRESHOLD: REWARD_THRESHOLD,
+            REWARD_STARS: REWARD_STARS
+        };
+    })();
+    </script>
+</body>
+</html>

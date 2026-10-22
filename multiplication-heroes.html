@@ -3,997 +3,832 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="color-scheme" content="dark">
+    <meta name="color-scheme" content="dark light">
     <meta name="theme-color" content="#0f172a">
-    <title>أبطال جدول الضرب - رحلة المهارة والتميز</title>
-    <meta name="description" content="لعبة تعليمية تفاعلية لتعلّم وحفظ جدول الضرب من 1 إلى 12: أسئلة متعددة الخيارات مع مؤقّت ونجوم وأوسمة وتحديات تحفيزية، مناسبة للطلاب والصفوف الابتدائية.">
-    <meta name="keywords" content="جدول الضرب, رياضيات, تعليم, لعبة, الصف الرابع, ضرب">
+    <title>أبطال جدول الضرب | مغامرات الرياضيات</title>
+    <meta name="description" content="لعبة جدول الضرب بخمسة أوضاع وأربعة مستويات صعوبة وتدريب تكيّفي يركّز على أخطائك، مع مراجعة بعد كل جولة وأوسمة ونجوم محفوظة.">
+    <meta name="keywords" content="جدول الضرب, رياضيات, تعليم, لعبة, ضرب, تدريب تكيّفي">
     <meta property="og:type" content="website">
-    <meta property="og:title" content="أبطال جدول الضرب - رحلة المهارة والتميز">
-    <meta property="og:description" content="لعبة تعليمية تفاعلية لتعلّم جدول الضرب: اختر الجدول، اجمع النجوم، وافرِز أوسمة الإنجاز.">
+    <meta property="og:title" content="أبطال جدول الضرب | مغامرات الرياضيات">
+    <meta property="og:description" content="خمسة أوضاع لعب وأربعة مستويات صعوبة وتدريب تكيّفي — اجمع النجوم والأوسمة في جدول الضرب.">
     <link rel="icon" type="image/svg+xml" href="assets/images/favicon.svg">
     <link rel="apple-touch-icon" href="assets/images/favicon.svg">
-
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preconnect" href="https://cdn.tailwindcss.com">
-    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
-
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome Icons -->
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
-    <!-- Google Fonts: Tajawal & Cairo -->
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
-    <!-- Tone.js for Sound Effects -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <!-- Canvas Confetti -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        brand: {
-                            50: '#f0f9ff',
-                            100: '#e0f2fe',
-                            400: '#38bdf8',
-                            500: '#0284c7',
-                            600: '#0369a1',
-                            700: '#075985',
-                        },
-                        accent: {
-                            yellow: '#f59e0b',
-                            purple: '#8b5cf6',
-                            green: '#10b981',
-                            pink: '#ec4899'
-                        }
-                    },
-                    fontFamily: {
-                        cairo: ['Cairo', 'sans-serif'],
-                        tajawal: ['Tajawal', 'sans-serif']
-                    }
-                }
-            }
-        }
-    </script>
-
+    <link rel="stylesheet" href="assets/css/main.css">
     <style>
-        body {
-            font-family: 'Cairo', sans-serif;
-            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #311042 100%);
-            min-height: 100vh;
-            color: #f8fafc;
-            user-select: none;
-            overflow-x: hidden;
+        .home-grid { display: grid; gap: 14px; }
+        .pick-row { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+        .mode-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+        @media (max-width: 900px) { .mode-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 460px) { .mode-grid { grid-template-columns: 1fr; } }
+        .mode-card {
+            text-align: start; padding: 14px; border-radius: 14px;
+            border: 2px solid var(--surface-border); background: var(--surface);
+            color: var(--text); font-family: inherit; cursor: pointer; transition: all .15s;
         }
-
-        .glass-card {
-            background: rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.18);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        .mode-card:hover { border-color: var(--accent); }
+        .mode-card.is-active { border-color: var(--accent); background: var(--warning-soft); box-shadow: 0 0 0 1px var(--accent); }
+        .mode-card .m-ico { font-size: 1.3rem; display: block; margin-bottom: 6px; color: var(--accent); }
+        .mode-card b { display: block; font-size: .92rem; margin-bottom: 3px; }
+        .mode-card span.d { font-size: .72rem; color: var(--text-dim); font-weight: 600; line-height: 1.45; display: block; }
+        .table-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; }
+        @media (max-width: 640px) { .table-grid { grid-template-columns: repeat(4, 1fr); } }
+        .table-btn {
+            min-height: 56px; border-radius: 14px; border: 2px solid var(--surface-border);
+            background: var(--surface); color: var(--text); font-family: inherit;
+            font-weight: 900; font-size: 1.15rem; cursor: pointer; transition: all .15s;
+            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0;
         }
-
-        .glass-button {
-            background: rgba(255, 255, 255, 0.12);
-            backdrop-filter: blur(8px);
-            border: 1px solid rgba(255, 255, 255, 0.25);
-            transition: all 0.2s ease-in-out;
+        .table-btn small { font-size: .62rem; font-weight: 700; color: var(--text-dim); }
+        .table-btn:hover { border-color: var(--accent-2); transform: translateY(-2px); }
+        .table-btn.is-active { border-color: var(--accent); background: var(--warning-soft); }
+        .eq-row { display: flex; align-items: center; justify-content: center; gap: 14px; flex-wrap: wrap; font-size: clamp(2rem, 8vw, 3.6rem); font-weight: 900; margin: 10px 0 22px; }
+        .eq-a { color: var(--accent-2); } .eq-b { color: var(--danger); } .eq-op { color: var(--accent); } .eq-q { color: var(--text-dim); }
+        .opt-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+        .opt-btn {
+            min-height: 68px; border-radius: 16px; border: 2px solid var(--surface-border);
+            background: var(--surface); color: var(--text); font-family: inherit;
+            font-weight: 900; font-size: 1.7rem; cursor: pointer; transition: transform .15s;
         }
-
-        .glass-button:hover {
-            background: rgba(255, 255, 255, 0.25);
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-        }
-
-        .glass-button:active {
-            transform: translateY(1px);
-        }
-
-        .option-btn {
-            transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-
-        .option-btn:hover {
-            transform: scale(1.03);
-        }
-
-        @keyframes pulse-glow {
-            0%, 100% { box-shadow: 0 0 15px rgba(56, 189, 248, 0.4); }
-            50% { box-shadow: 0 0 30px rgba(236, 72, 153, 0.7); }
-        }
-
-        .glowing-hero {
-            animation: pulse-glow 3s infinite;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-10px) rotate(2deg); }
-        }
-
-        .floating {
-            animation: float 4s ease-in-out infinite;
-        }
-
-        .star-shine {
-            animation: spin 8s linear infinite;
-        }
-
-        @keyframes spin {
-            100% { transform: rotate(360deg); }
-        }
-
-        :focus-visible {
-            outline: 3px solid #f59e0b;
-            outline-offset: 2px;
-        }
-
-        button:disabled {
-            cursor: not-allowed;
-        }
-
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: rgba(15, 23, 42, 0.6);
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #38bdf8;
-            border-radius: 4px;
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-            .floating, .glowing-hero, .star-shine, .animate-ping, .animate-bounce {
-                animation: none !important;
-            }
-            * {
-                transition-duration: 0.01ms !important;
-            }
-        }
+        .opt-btn:hover:not(:disabled) { transform: scale(1.03); border-color: var(--accent); }
+        .opt-btn:disabled { cursor: default; }
+        .opt-btn.is-correct { background: var(--success-soft); border-color: var(--success); }
+        .opt-btn.is-wrong { background: var(--danger-soft); border-color: var(--danger); }
+        .game-bar { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+        .boss-bar { display: grid; gap: 8px; }
+        .boss-hearts { letter-spacing: 4px; font-size: 1.15rem; }
+        .review-row { display: flex; justify-content: space-between; gap: 12px; padding: 10px 4px; border-bottom: 1px dashed var(--surface-border); font-size: .9rem; }
+        .review-row .ok { color: var(--success); font-weight: 800; }
+        .review-row .bad { color: var(--danger); font-weight: 800; }
+        .score-breakdown { display: grid; gap: 6px; text-align: start; background: var(--surface); border: 1px solid var(--surface-border); border-radius: 12px; padding: 14px; font-size: .85rem; }
+        .score-breakdown div { display: flex; justify-content: space-between; }
+        .screen { display: none; flex-direction: column; gap: 16px; align-items: center; text-align: center; }
+        .screen.is-active { display: flex; }
     </style>
 </head>
-<body class="flex flex-col justify-between min-h-screen p-2 md:p-6 relative">
+<body>
+    <a class="skip-link" href="#main">تخطَّ إلى المحتوى</a>
 
-    <!-- Canvas Background Effect -->
-    <canvas id="bgCanvas" class="fixed top-0 left-0 w-full h-full pointer-events-none z-0 opacity-40" aria-hidden="true"></canvas>
-
-    <!-- Main Top Header -->
-    <header class="relative z-10 w-full max-w-5xl mx-auto flex flex-wrap items-center justify-between gap-4 p-4 rounded-2xl glass-card mb-4">
-        <div class="flex items-center gap-3">
-            <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-amber-400 to-amber-600 flex items-center justify-center text-2xl shadow-lg transform rotate-3" aria-hidden="true">
-                <i class="fa-solid fa-crown text-slate-900"></i>
-            </div>
-            <div>
-                <h1 class="text-xl md:text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-sky-300 to-pink-400">
-                    <a href="index.html" class="hover:underline">أبطال جدول الضرب</a>
-                </h1>
-                <p class="text-xs text-slate-300">مغامرة الرياضيات الشيقة والمحفزة!</p>
-            </div>
-        </div>
-
-        <!-- Dashboard Stats -->
-        <div class="flex items-center gap-3 text-sm font-bold">
-            <div class="flex items-center gap-1.5 bg-amber-500/20 border border-amber-500/40 px-3 py-1.5 rounded-xl text-amber-300">
-                <i class="fa-solid fa-star text-amber-400 text-lg floating" aria-hidden="true"></i>
-                <span>النجوم:</span>
-                <span id="totalStars" aria-live="polite">0</span>
-            </div>
-
-            <div class="flex items-center gap-1.5 bg-sky-500/20 border border-sky-500/40 px-3 py-1.5 rounded-xl text-sky-300">
-                <i class="fa-solid fa-fire text-orange-400 text-lg" aria-hidden="true"></i>
-                <span class="sr-only">السلسلة:</span>
-                <span id="streakCount" aria-live="polite">0</span>
-            </div>
-
-            <button type="button" id="soundToggleBtn" onclick="toggleAudio()" class="w-10 h-10 rounded-xl glass-button flex items-center justify-center text-amber-300 hover:text-white" title="تشغيل/إيقاف الصوت" aria-label="تشغيل أو إيقاف الصوت" aria-pressed="true">
-                <i id="soundIcon" class="fa-solid fa-volume-high" aria-hidden="true"></i>
+    <nav class="ma-nav" aria-label="التنقل الرئيسي">
+        <div class="container ma-nav__inner">
+            <a class="ma-nav__brand" href="index.html">
+                <span class="logo" aria-hidden="true">√</span>
+                <span>مغامرات الرياضيات<small>Math Adventures</small></span>
+            </a>
+            <button type="button" class="ma-nav__toggle" aria-expanded="false" aria-controls="navLinks">
+                <i class="fa-solid fa-bars" aria-hidden="true"></i> القائمة
             </button>
+            <ul class="ma-nav__links" id="navLinks">
+                <li><a href="index.html" data-key="home"><i class="fa-solid fa-house" aria-hidden="true"></i> الرئيسية</a></li>
+                <li><a href="multiplication-heroes.html" data-key="mult"><i class="fa-solid fa-crown" aria-hidden="true"></i> أبطال جدول الضرب</a></li>
+                <li><a href="place-value-adventure.html" data-key="place"><i class="fa-solid fa-layer-group" aria-hidden="true"></i> الأعداد والمنازل</a></li>
+                <li><a href="daily-challenge.html" data-key="daily"><i class="fa-solid fa-calendar-day" aria-hidden="true"></i> تحدي اليوم</a></li>
+                <li><a href="worksheets.html" data-key="worksheets"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> أوراق العمل</a></li>
+                <li><a href="achievements.html" data-key="achievements"><i class="fa-solid fa-medal" aria-hidden="true"></i> إنجازاتي</a></li>
+                <li><a href="settings.html" data-key="settings"><i class="fa-solid fa-gear" aria-hidden="true"></i> الإعدادات</a></li>
+            </ul>
         </div>
-    </header>
+    </nav>
 
-    <!-- Main Dynamic Application Container -->
-    <main class="relative z-10 w-full max-w-5xl mx-auto flex-1 flex flex-col justify-center my-2">
-
-        <!-- SCREEN 1: Home & Table Selection -->
-        <div id="screenHome" class="flex flex-col items-center text-center space-y-6">
-            <!-- Hero Banner -->
-            <div class="glass-card p-6 md:p-8 rounded-3xl w-full max-w-3xl border border-sky-500/30 glowing-hero relative overflow-hidden">
-                <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-pink-500/20 rounded-full blur-2xl pointer-events-none" aria-hidden="true"></div>
-                <div class="absolute -left-10 -top-10 w-40 h-40 bg-sky-500/20 rounded-full blur-2xl pointer-events-none" aria-hidden="true"></div>
-
-                <div class="inline-block px-4 py-1.5 rounded-full bg-amber-400/20 border border-amber-400/40 text-amber-300 text-xs font-bold mb-3">
-                    <i class="fa-solid fa-wand-magic-sparkles ml-1" aria-hidden="true"></i> تعلم واحترف جدول الضرب بإتقان!
-                </div>
-                <h2 class="text-2xl md:text-4xl font-black mb-3 leading-snug">
-                    اختر الجدول الذي تريد أن تصبح <span class="text-amber-400 underline decoration-sky-400">بطلاً فيه</span>!
-                </h2>
-                <p class="text-sm md:text-base text-slate-300 max-w-xl mx-auto mb-6">
-                    تحدَّ نفسك، اجمع النجوم، وافرِز أوسمة الإنجاز. اجعل أرقام جدول الضرب حليفتك الذكية!
-                </p>
-
-                <!-- Tables Grid (1 - 12) -->
-                <div id="tablesGrid" class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3 mb-6">
-                    <!-- Dynamic Buttons Generated in JS -->
-                </div>
-
-                <!-- Mixed Challenge Button -->
-                <div class="flex flex-wrap justify-center gap-3">
-                    <button type="button" onclick="selectTable('all')" class="bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-slate-950 font-black px-6 py-3.5 rounded-2xl shadow-lg flex items-center gap-2 transform hover:-translate-y-1 transition">
-                        <i class="fa-solid fa-bolt text-lg" aria-hidden="true"></i>
-                        <span>تحدي جميع الجداول الشامل</span>
-                    </button>
-
-                    <button type="button" onclick="openMotivationalQuiz()" class="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-black px-6 py-3.5 rounded-2xl shadow-lg flex items-center gap-2 transform hover:-translate-y-1 transition">
-                        <i class="fa-solid fa-brain text-lg" aria-hidden="true"></i>
-                        <span>الأسئلة التحفيزية والألغاز</span>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Motivational Banner / Daily Quote -->
-            <div class="glass-card p-4 rounded-2xl w-full max-w-3xl flex items-center gap-3 border border-amber-400/20">
-                <div class="w-10 h-10 rounded-xl bg-amber-400/20 flex items-center justify-center text-amber-400 text-lg flex-shrink-0" aria-hidden="true">
-                    <i class="fa-solid fa-lightbulb"></i>
-                </div>
-                <div class="text-right">
-                    <h4 class="text-xs font-bold text-amber-300">حكمة اليوم للعباقرة:</h4>
-                    <p id="motivationalQuote" class="text-xs md:text-sm text-slate-200">"الرياضيات ليست مجرد أرقام، بل هي القوة الخارقة التي تساعدك على حل كل الألغاز!"</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- SCREEN 2: Multiplication Arena Game -->
-        <div id="screenGame" class="hidden flex-col items-center text-center space-y-4">
-
-            <!-- Game Top Info Bar -->
-            <div class="w-full max-w-2xl glass-card px-6 py-3 rounded-2xl flex items-center justify-between flex-wrap gap-3">
-                <button type="button" onclick="goHome()" class="text-xs bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded-xl border border-slate-600 text-slate-300 flex items-center gap-1">
-                    <i class="fa-solid fa-arrow-right" aria-hidden="true"></i> القائمة الرئيسية
-                </button>
-
-                <div class="flex items-center gap-2">
-                    <span class="text-xs text-sky-300">السؤال:</span>
-                    <span id="questionCounter" class="font-bold text-amber-400">1 / 10</span>
-                </div>
-
-                <!-- Timer Indicator -->
-                <div class="flex items-center gap-2">
-                    <i class="fa-solid fa-clock text-amber-400 text-sm" aria-hidden="true"></i>
-                    <span class="text-xs text-slate-300">الوقت:</span>
-                    <span id="timerDisplay" class="font-mono font-bold text-lg text-white" aria-live="off">15</span>
-                </div>
-            </div>
-
-            <!-- Progress Bar -->
-            <div class="w-full max-w-2xl bg-slate-800/80 h-3 rounded-full overflow-hidden border border-slate-700" role="progressbar" aria-label="تقدم الأسئلة" aria-valuemin="0" aria-valuemax="10" aria-valuenow="0" id="progressBarWrap">
-                <div id="progressBar" class="h-full bg-gradient-to-r from-sky-400 via-amber-400 to-green-400 w-0 transition-all duration-300"></div>
-            </div>
-
-            <!-- Question Card -->
-            <div class="glass-card p-6 sm:p-8 rounded-3xl w-full max-w-2xl border border-sky-400/40 relative shadow-2xl overflow-hidden">
-                <div id="feedbackBadge" class="hidden absolute top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full text-xs font-black bg-emerald-500 text-slate-950 animate-bounce" role="status">
-                    ممتاز! إجابة بطل!
-                </div>
-
-                <!-- Avatar / Character Graphic -->
-                <div class="w-20 h-20 mx-auto mb-4 rounded-3xl bg-gradient-to-tr from-sky-500 to-indigo-600 flex items-center justify-center text-4xl shadow-lg floating" aria-hidden="true">
-                    <i id="heroIcon" class="fa-solid fa-robot text-amber-300"></i>
-                </div>
-
-                <p class="text-xs text-sky-300 font-semibold mb-2" id="questionSubtitle">ما هو حاصل ضرب العوامل التالية؟</p>
-
-                <!-- Equation Display -->
-                <div class="flex items-center justify-center gap-3 sm:gap-4 text-3xl sm:text-4xl md:text-6xl font-black mb-8 text-white">
-                    <span id="numA" class="text-sky-400">7</span>
-                    <span class="text-amber-400" aria-hidden="true">×</span>
-                    <span id="numB" class="text-pink-400">8</span>
-                    <span class="text-slate-400" aria-hidden="true">=</span>
-                    <span class="text-amber-300 font-mono">؟</span>
-                </div>
-
-                <!-- Options Grid -->
-                <div id="optionsGrid" class="grid grid-cols-2 gap-3 sm:gap-4">
-                    <!-- Dynamic option buttons in JS -->
-                </div>
-            </div>
-
-            <!-- Motivational Message Box -->
-            <div id="encouragementBox" class="glass-card p-3 rounded-xl w-full max-w-2xl text-xs md:text-sm text-amber-200 border border-amber-400/30 flex items-center justify-center gap-2">
-                <i class="fa-solid fa-face-smile-wink text-amber-400 text-lg" aria-hidden="true"></i>
-                <span id="encouragementText">ركز جيداً، أنت قادر على حلها بكل سهولة!</span>
-            </div>
-        </div>
-
-        <!-- SCREEN 3: Motivational & Reflection Quiz -->
-        <div id="screenMotivationalQuiz" class="hidden flex-col items-center text-center space-y-4">
-            <div class="glass-card p-6 md:p-8 rounded-3xl w-full max-w-2xl border border-purple-500/40 relative">
-                <button type="button" onclick="goHome()" class="absolute top-4 right-4 text-xs bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded-xl border border-slate-600 text-slate-300">
-                    <i class="fa-solid fa-xmark" aria-hidden="true"></i> إغلاق
-                </button>
-
-                <div class="w-16 h-16 mx-auto mb-3 rounded-2xl bg-purple-600/30 border border-purple-400 flex items-center justify-center text-purple-300 text-3xl" aria-hidden="true">
-                    <i class="fa-solid fa-brain"></i>
-                </div>
-
-                <h3 class="text-xl font-black text-amber-300 mb-2">تحدي الذكاء والتفكير الإيجابي</h3>
-                <p class="text-xs text-slate-300 mb-6">أسئلة تجمع بين مفاهيم الرياضيات والتفكير المنطقي والتحفيز الذاتي!</p>
-
-                <!-- Motivational Question Card -->
-                <div class="bg-slate-900/60 p-5 rounded-2xl border border-slate-700 text-right mb-6">
-                    <span id="motivationalTag" class="inline-block px-3 py-1 bg-purple-500/20 text-purple-300 text-xs font-bold rounded-lg mb-2">
-                        سؤال ذكاء وتحفيز
-                    </span>
-                    <h4 id="mQuestionText" class="text-base md:text-lg font-bold text-white mb-3">
-                        إذا كان لديك 4 صناديق وفي كل صندوق 6 نجمات متلألئة، كم نجمة تملك إجمالاً؟ وكيف تشعر عندما تحل هذه المسألة؟
-                    </h4>
-                    <div id="mOptionsContainer" class="space-y-2">
-                        <!-- Dynamic Options Generated Here -->
+    <main id="main" class="container" style="padding-block:20px 10px">
+        <!-- ============ HOME ============ -->
+        <section class="screen is-active" id="screenHome" aria-label="القائمة الرئيسية للعبة">
+            <div class="ma-card" style="width:100%;max-width:860px">
+                <div class="flex-between mb-2">
+                    <div style="text-align:start">
+                        <span class="ma-badge"><i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i> 5 أوضاع × 4 مستويات</span>
+                        <h1 style="font-size:clamp(1.4rem,4vw,2rem);margin:8px 0 4px">أبطال جدول الضرب</h1>
+                        <p class="text-dim" style="font-size:.85rem;margin:0">اختر المستوى والموضع والجدول، ثم ابدأ التحدي. تقدّمك يُحفظ تلقائياً.</p>
+                    </div>
+                    <div class="ma-stats" style="min-width:260px">
+                        <div class="ma-stat"><span class="ma-stat__value" id="hudStars">0</span><span class="ma-stat__label">نجوم</span></div>
+                        <div class="ma-stat"><span class="ma-stat__value" id="hudBest">0</span><span class="ma-stat__label">أطول سلسلة</span></div>
+                        <div class="ma-stat"><span class="ma-stat__value" id="hudBadges">0</span><span class="ma-stat__label">أوسمة</span></div>
+                        <div class="ma-stat"><span class="ma-stat__value" id="hudRounds">0</span><span class="ma-stat__label">جولات</span></div>
                     </div>
                 </div>
 
-                <div class="flex justify-between items-center text-xs text-slate-400">
-                    <span id="mQuizProgress">سؤال 1 من 5</span>
-                    <button type="button" id="nextMQuizBtn" onclick="nextMotivationalQuestion()" class="hidden bg-purple-600 hover:bg-purple-500 text-white px-5 py-2 rounded-xl font-bold">
-                        السؤال التالي <i class="fa-solid fa-arrow-left mr-1" aria-hidden="true"></i>
+                <div class="game-bar mb-1" style="justify-content:flex-start">
+                    <span class="text-dim" style="font-size:.8rem;font-weight:800"><i class="fa-solid fa-signal" aria-hidden="true"></i> المستوى:</span>
+                    <div class="pick-row" role="group" aria-label="مستوى الصعوبة">
+                        <button type="button" class="ma-chip" data-diff="easy">سهل · 8 أسئلة بلا مؤقّت</button>
+                        <button type="button" class="ma-chip" data-diff="medium">متوسط · 10 أسئلة × 20ث</button>
+                        <button type="button" class="ma-chip" data-diff="hard">صعب · 12 سؤالاً × 15ث</button>
+                        <button type="button" class="ma-chip" data-diff="expert">خبير · حتى 15×12 × 12ث</button>
+                    </div>
+                </div>
+
+                <div class="text-dim mb-1 mt-2" style="font-size:.8rem;font-weight:800;text-align:start"><i class="fa-solid fa-gamepad" aria-hidden="true"></i> نمط اللعب:</div>
+                <div class="mode-grid" role="group" aria-label="أنماط اللعب">
+                    <button type="button" class="mode-card" data-mode="free">
+                        <i class="fa-solid fa-seedling m-ico" aria-hidden="true"></i>
+                        <b>تدريب تكيّفي</b>
+                        <span class="d">بلا مؤقّت — يعطيك الأسئلة التي أخطأت فيها أكثر.</span>
                     </button>
+                    <button type="button" class="mode-card" data-mode="timed">
+                        <i class="fa-solid fa-stopwatch m-ico" aria-hidden="true"></i>
+                        <b>تحدي الوقت</b>
+                        <span class="d">مؤقّت حسب المستوى — أسرع ما تقدر.</span>
+                    </button>
+                    <button type="button" class="mode-card" data-mode="mixed">
+                        <i class="fa-solid fa-shuffle m-ico" aria-hidden="true"></i>
+                        <b>تحدي مختلط</b>
+                        <span class="d">جداول عشوائية من عائلة الصعوبة المختارة.</span>
+                    </button>
+                    <button type="button" class="mode-card" data-mode="accuracy">
+                        <i class="fa-solid fa-bullseye m-ico" aria-hidden="true"></i>
+                        <b>تحدي الدقة</b>
+                        <span class="d">بلا مؤقّت — 90% دقة فأكثر تفتح مكافأة +5.</span>
+                    </button>
+                    <button type="button" class="mode-card" data-mode="boss">
+                        <i class="fa-solid fa-dragon m-ico" aria-hidden="true"></i>
+                        <b>تحدي الزعيم</b>
+                        <span class="d">3 مراحل × 4 أسئلة — 8 إجابات صحيحة = +10 نجوم.</span>
+                    </button>
+                </div>
+
+                <div class="text-dim mb-1 mt-2" style="font-size:.8rem;font-weight:800;text-align:start" id="tableLabel">
+                    <i class="fa-solid fa-table" aria-hidden="true"></i> الجدول (يُستخدم في تحدي الوقت والدقة):
+                </div>
+                <div class="table-grid" id="tablesGrid" role="group" aria-labelledby="tableLabel"></div>
+
+                <div class="flex mt-2" style="justify-content:center">
+                    <button type="button" class="ma-btn" id="btnStart" style="min-width:220px"><i class="fa-solid fa-play" aria-hidden="true"></i> ابدأ التحدي</button>
+                    <button type="button" class="ma-btn ma-btn--ghost" id="btnSound" aria-pressed="true" title="تشغيل/إيقاف الصوت" aria-label="تشغيل أو إيقاف الصوت"><i id="soundIcon" class="fa-solid fa-volume-high" aria-hidden="true"></i></button>
+                </div>
+                <p class="text-dim mt-1" style="font-size:.75rem" id="startHint"></p>
+            </div>
+
+            <div class="ma-card" style="width:100%;max-width:860px;display:flex;gap:14px;align-items:center">
+                <span class="ma-card__icon" style="margin:0" aria-hidden="true"><i class="fa-solid fa-lightbulb"></i></span>
+                <div style="text-align:start">
+                    <b style="font-size:.8rem;color:var(--accent)">حكمة اليوم للعباقرة:</b>
+                    <p id="motivationalQuote" class="text-muted" style="font-size:.85rem;margin:2px 0 0">…</p>
                 </div>
             </div>
-        </div>
+        </section>
 
-        <!-- SCREEN 4: Game Result & Celebration Screen -->
-        <div id="screenResult" class="hidden flex-col items-center text-center space-y-6">
-            <div class="glass-card p-6 sm:p-8 rounded-3xl w-full max-w-xl border border-amber-400/50 shadow-2xl relative overflow-hidden mx-auto">
-                <div class="w-24 h-24 mx-auto rounded-full bg-gradient-to-tr from-amber-400 to-yellow-200 flex items-center justify-center text-slate-950 text-5xl mb-4 shadow-xl floating" aria-hidden="true">
-                    <i class="fa-solid fa-trophy"></i>
+        <!-- ============ GAME ============ -->
+        <section class="screen" id="screenGame" aria-label="ساحة اللعب">
+            <div class="ma-card game-bar" style="width:100%;max-width:760px">
+                <button type="button" class="ma-btn ma-btn--secondary ma-btn--sm" id="btnHome"><i class="fa-solid fa-arrow-right" aria-hidden="true"></i> القائمة</button>
+                <span class="ma-badge ma-badge--muted" id="modeLabel">—</span>
+                <span class="ma-badge" id="qCounter">1 / 10</span>
+                <span class="flex" style="gap:6px">
+                    <i class="fa-solid fa-clock" style="color:var(--accent)" aria-hidden="true"></i>
+                    <b id="timerDisplay" style="font-size:1.05rem" aria-live="off">—</b>
+                </span>
+                <span class="ma-badge ma-badge--success"><i class="fa-solid fa-star" aria-hidden="true"></i> <span id="liveStars">0</span></span>
+                <span class="ma-badge ma-badge--danger"><i class="fa-solid fa-fire" aria-hidden="true"></i> <span id="streakCount">0</span></span>
+            </div>
+
+            <div class="ma-progress" style="width:100%;max-width:760px" role="progressbar" aria-label="تقدم الأسئلة" aria-valuemin="0" aria-valuemax="10" aria-valuenow="0" id="progressWrap">
+                <div class="ma-progress__bar" id="progressBar" style="width:0%"></div>
+            </div>
+
+            <div class="ma-card boss-bar" id="bossPanel" hidden style="width:100%;max-width:760px">
+                <div class="game-bar">
+                    <b style="font-size:.9rem" id="bossPhase">المرحلة 1</b>
+                    <span class="text-dim" style="font-size:.78rem">هدف النصر: <b id="bossGoal">8/12</b></span>
+                </div>
+                <div class="boss-hearts" id="bossHearts" aria-live="polite">💚💚💚💚💚💚💚💚</div>
+                <div class="text-dim" style="font-size:.75rem" id="bossHint">أجب صحيحاً لتقليل قوة الزعيم!</div>
+            </div>
+
+            <div class="ma-card" style="width:100%;max-width:760px;position:relative">
+                <div class="ma-badge ma-badge--success" id="feedbackBadge" hidden role="status" style="position:absolute;top:-14px;left:50%;transform:translateX(-50%)">ممتاز! إجابة بطل!</div>
+                <div class="ma-card__icon" style="margin-inline:auto" aria-hidden="true"><i id="heroIcon" class="fa-solid fa-robot"></i></div>
+                <p class="text-dim" style="font-size:.8rem;font-weight:700;margin:0" id="questionSubtitle">ما هو حاصل ضرب العوامل التالية؟</p>
+                <div class="eq-row">
+                    <span class="eq-a" id="numA">7</span>
+                    <span class="eq-op" aria-hidden="true">×</span>
+                    <span class="eq-b" id="numB">8</span>
+                    <span class="eq-q" aria-hidden="true">= ؟</span>
+                </div>
+                <div class="opt-grid" id="optionsGrid"></div>
+            </div>
+
+            <div class="ma-card" style="width:100%;max-width:760px;padding:10px 14px;font-size:.82rem;color:var(--accent);font-weight:700">
+                <i class="fa-solid fa-face-smile-wink" aria-hidden="true"></i>
+                <span id="encouragementText">ركّز جيداً، أنت قادر على حلها!</span>
+            </div>
+        </section>
+
+        <!-- ============ RESULT ============ -->
+        <section class="screen" id="screenResult" aria-label="نتيجة الجولة">
+            <div class="ma-card" style="width:100%;max-width:720px">
+                <div class="ma-card__icon" style="margin-inline:auto" aria-hidden="true"><i class="fa-solid fa-trophy"></i></div>
+                <h2 id="resultTitle" style="font-size:1.4rem">إنجاز رائع يا بطل!</h2>
+                <p id="resultSubtitle" class="text-muted" style="font-size:.9rem">…</p>
+
+                <div class="ma-stats mb-2">
+                    <div class="ma-stat"><span class="ma-stat__value" id="resCorrect">0/10</span><span class="ma-stat__label">إجابات صحيحة</span></div>
+                    <div class="ma-stat"><span class="ma-stat__value" id="resPercentage">0%</span><span class="ma-stat__label">النسبة</span></div>
+                    <div class="ma-stat"><span class="ma-stat__value" id="resStars">+0</span><span class="ma-stat__label">نجوم الجولة</span></div>
                 </div>
 
-                <h2 id="resultTitle" class="text-2xl md:text-3xl font-black text-amber-300 mb-2">إنجاز رائع يا بطل!</h2>
-                <p id="resultSubtitle" class="text-sm text-slate-200 mb-6">لقد أثبتّ مهارة عالية في جدول الضرب!</p>
+                <div class="score-breakdown mb-2" id="scoreBreakdown"></div>
 
-                <!-- Score Details Card -->
-                <div class="grid grid-cols-3 gap-3 bg-slate-900/80 p-4 rounded-2xl border border-slate-700 mb-6">
-                    <div>
-                        <div class="text-xs text-slate-400">الإجابات الصحيحة</div>
-                        <div id="resCorrect" class="text-xl md:text-2xl font-black text-emerald-400">8 / 10</div>
-                    </div>
-                    <div>
-                        <div class="text-xs text-slate-400">النجوم المكتسبة</div>
-                        <div id="resStars" class="text-xl md:text-2xl font-black text-amber-400">+15 ⭐</div>
-                    </div>
-                    <div>
-                        <div class="text-xs text-slate-400">النسبة المئوية</div>
-                        <div id="resPercentage" class="text-xl md:text-2xl font-black text-sky-400">80%</div>
-                    </div>
+                <div class="ma-card" id="reviewBox" hidden style="background:var(--surface);margin-bottom:14px">
+                    <div class="section-title" style="font-size:.95rem;margin-top:0"><i class="fa-solid fa-clipboard-check" aria-hidden="true"></i> مراجعة الأخطاء</div>
+                    <div id="reviewList" style="text-align:start"></div>
+                    <p class="text-dim" id="reviewEmpty" style="font-size:.82rem" hidden>لا أخطاء هذه المرة — أداء كامل!</p>
                 </div>
 
-                <!-- Personal Motivational Feedback -->
-                <div id="resultMotivation" class="p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-200 text-sm font-semibold mb-6">
-                    "استمر في التدرب! الرياضيات هي مفتاح العباقرة لاكتشاف العالم."
-                </div>
-
-                <!-- Action Buttons -->
-                <div class="flex justify-center gap-3 flex-wrap">
-                    <button type="button" onclick="replayCurrentMode()" class="bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold px-6 py-3 rounded-xl flex items-center gap-2">
-                        <i class="fa-solid fa-rotate-right" aria-hidden="true"></i> إعادة التحدي
-                    </button>
-                    <button type="button" onclick="goHome()" class="bg-slate-700 hover:bg-slate-600 text-white font-bold px-6 py-3 rounded-xl flex items-center gap-2">
-                        <i class="fa-solid fa-house" aria-hidden="true"></i> القائمة الرئيسية
-                    </button>
+                <div class="flex" style="justify-content:center">
+                    <button type="button" class="ma-btn" id="btnReplay"><i class="fa-solid fa-rotate-right" aria-hidden="true"></i> إعادة التحدي</button>
+                    <button type="button" class="ma-btn ma-btn--success" id="btnReview" hidden><i class="fa-solid fa-book-open" aria-hidden="true"></i> تدرّب على أخطائك (بدون نقاط)</button>
+                    <button type="button" class="ma-btn ma-btn--secondary" id="btnResultHome"><i class="fa-solid fa-house" aria-hidden="true"></i> القائمة الرئيسية</button>
                 </div>
             </div>
-        </div>
-
+        </section>
     </main>
 
-    <!-- Footer -->
-    <footer class="relative z-10 w-full max-w-5xl mx-auto text-center py-3 text-xs text-slate-400 border-t border-slate-800 mt-4">
-        <p>مصمم بأسلوب تفاعلي ومحفز للطلاب لتعزيز مهارات الرياضيات وحفظ جدول الضرب بسهولة. ✨</p>
-        <p class="mt-1"><a href="index.html" class="text-sky-400 hover:underline">العودة إلى صفحة الأدوات</a></p>
+    <footer class="ma-footer">
+        <div class="container">
+            <nav aria-label="روابط التذييل">
+                <a href="index.html">الرئيسية</a>
+                <a href="place-value-adventure.html">القيمة المنزلية</a>
+                <a href="daily-challenge.html">تحدي اليوم</a>
+                <a href="worksheets.html">أوراق العمل</a>
+                <a href="achievements.html">الإنجازات</a>
+            </nav>
+            <p>Math Adventures | مغامرات الرياضيات © <span data-year></span></p>
+        </div>
     </footer>
 
-    <!-- Custom Notification Toast -->
-    <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 hidden bg-slate-900 text-white border border-amber-400/50 px-6 py-3 rounded-2xl shadow-2xl text-xs md:text-sm font-bold flex items-center gap-2" role="status" aria-live="polite">
-        <i id="toastIcon" class="fa-solid fa-star text-amber-400" aria-hidden="true"></i>
-        <span id="toastMsg">تم كسب وسام جديد!</span>
-    </div>
-
-    <!-- JavaScript Game Engine Logic -->
+    <script src="assets/js/store.js"></script>
+    <script src="assets/js/audio.js"></script>
+    <script src="assets/js/ui.js"></script>
     <script>
-        // Audio Controls & Synthesizer Setup using Tone.js
-        let audioEnabled = true;
-        let synth, polySynth;
+    (function () {
+        'use strict';
+        MA.initShell('mult');
+        MA.bindSoundToggle('btnSound', 'soundIcon');
 
-        function initAudio() {
-            try {
-                if (typeof Tone === 'undefined') return;
-                if (!synth) {
-                    synth = new Tone.Synth().toDestination();
-                    polySynth = new Tone.PolySynth(Tone.Synth).toDestination();
-                }
-            } catch(e) {
-                console.log("Audio Init Warning:", e);
-            }
-        }
-
-        function playSound(type) {
-            if (!audioEnabled) return;
-            if (typeof Tone === 'undefined') return;
-            try {
-                Tone.start();
-                initAudio();
-                const now = Tone.now();
-
-                if (type === 'correct') {
-                    // Cheerful Arpeggio
-                    polySynth.triggerAttackRelease(["C5", "E5", "G5", "C6"], "8n", now);
-                } else if (type === 'wrong') {
-                    // Gentle Low Buzz
-                    synth.triggerAttackRelease("G2", "8n", now);
-                } else if (type === 'click') {
-                    // Quick Soft Click
-                    synth.triggerAttackRelease("C4", "16n", now);
-                } else if (type === 'win') {
-                    // Victory Fanfare
-                    polySynth.triggerAttackRelease(["C4", "E4", "G4", "C5"], "4n", now);
-                    polySynth.triggerAttackRelease(["G4", "B4", "D5", "G5"], "4n", now + 0.25);
-                }
-            } catch(e) {
-                // Fallback quiet handle
-            }
-        }
-
-        function toggleAudio() {
-            audioEnabled = !audioEnabled;
-            const icon = document.getElementById('soundIcon');
-            const btn = document.getElementById('soundToggleBtn');
-            btn.setAttribute('aria-pressed', String(audioEnabled));
-            if (audioEnabled) {
-                icon.className = 'fa-solid fa-volume-high';
-                btn.classList.remove('opacity-50');
-                showToast("تم تشغيل الصوت", "fa-volume-high");
-            } else {
-                icon.className = 'fa-solid fa-volume-xmark';
-                btn.classList.add('opacity-50');
-                showToast("تم إيقاف الصوت", "fa-volume-xmark");
-            }
-        }
-
-        // Persistent stars (safe in private mode / blocked storage)
-        function loadStoredStars() {
-            try {
-                const v = parseInt(localStorage.getItem('math_stars'), 10);
-                return (Number.isFinite(v) && v >= 0) ? v : 0;
-            } catch (e) {
-                return 0;
-            }
-        }
-
-        function persistStars() {
-            try {
-                localStorage.setItem('math_stars', String(totalStars));
-            } catch (e) { /* storage unavailable: keep in-memory score */ }
-        }
-
-        // Game State Variables
-        let totalStars = loadStoredStars();
-        let streak = 0;
-        let currentTable = 1;
-        let currentQuestionIndex = 0;
-        let totalQuestions = 10;
-        let correctAnswersCount = 0;
-        let timerInterval = null;
-        let timeLeft = 15;
-        let currentQuestionsList = [];
-        let motivationalQuizIndex = 0;
-        let motivationalScore = 0;
-        let questionLocked = false;
-
-        // Quotes for Motivation
-        const quotes = [
-            "الرياضيات ليست مجرد أرقام، بل هي القوة الخارقة التي تساعدك على حل كل الألغاز!",
-            "كل مسألة تحلها تجعل عقلك أقوى وأسرع بمقدار خطوة!",
-            "الخطأ هو معلمك الأول نحو النجاح، استمر في المحاولة!",
-            "أنت أسرع ذكاءً مما تتخيل، ثق بنفسك وبقدراتك الممتازة!",
-            "حفظ جدول الضرب يفتح لك أبواب التفوق في العلوم والتكنولوجيا!"
+        var DIFF = {
+            easy:   { label: 'سهل',  count: 8,  time: 0,  minA: 1, maxA: 12 },
+            medium: { label: 'متوسط', count: 10, time: 20, minA: 2, maxA: 12 },
+            hard:   { label: 'صعب',  count: 12, time: 15, minA: 3, maxA: 12 },
+            expert: { label: 'خبير', count: 12, time: 12, minA: 10, maxA: 15 }
+        };
+        var MODES = {
+            free:     { label: 'تدريب تكيّفي', timer: false },
+            timed:    { label: 'تحدي الوقت',   timer: true },
+            mixed:    { label: 'تحدي مختلط',   timer: true },
+            accuracy: { label: 'تحدي الدقة',   timer: false },
+            boss:     { label: 'تحدي الزعيم',  timer: true, fixedTime: 15 }
+        };
+        var BOSS_PHASES = [
+            { label: 'المرحلة 1 — التدريب', minA: 2, maxA: 6, minB: 2, maxB: 6 },
+            { label: 'المرحلة 2 — المواجهة', minA: 6, maxA: 10, minB: 2, maxB: 12 },
+            { label: 'المرحلة 3 — المعركة الأخيرة', minA: 10, maxA: 15, minB: 2, maxB: 12 }
+        ];
+        var BOSS_TOTAL = 12, BOSS_WIN = 8, BOSS_TIME = 15;
+        var QUOTES = [
+            'الرياضيات ليست مجرد أرقام، بل هي القوة الخارقة التي تساعدك على حل كل الألغاز!',
+            'كل مسألة تحلها تجعل عقلك أقوى وأسرع بمقدار خطوة!',
+            'الخطأ هو معلمك الأول نحو النجاح، استمر في المحاولة!',
+            'أنت أسرع ذكاءً مما تتخيل، ثق بنفسك وبقدراتك الممتازة!',
+            'حفظ جدول الضرب يفتح لك أبواب التفوق في العلوم والتكنولوجيا!'
+        ];
+        var ENCOURAGE = [
+            'رائع! أنت تسير بخطى ثابته نحو القمة!',
+            'إجابة ذكية جداً، واصل التألق!',
+            'ممتاز! جدول الضرب أصبح لعبة سهلة بالنسبة لك!',
+            'يا لك من بطل! تركيزك اليوم عالي ومبهر!',
+            'استجابة سريعة ودقيقة، أنت عبقري!'
         ];
 
-        // Encouragement sayings during game
-        const encouragements = [
-            "رائع! أنت تسير بخطى ثابته نحو القمة!",
-            "إجابة ذكية جدًا، واصل التألق!",
-            "ممتاز! جدول الضرب أصبح لعبة سهلة بالنسبة لك!",
-            "يا لك من بطل! تركيزك اليوم عالي ومبهر!",
-            "استجابة سريعة ودقيقة، أنت عبقري!"
-        ];
+        var state = { difficulty: 'medium', mode: 'free', table: 'all' };
+        var round = {
+            active: false, isReview: false, questions: [], idx: 0, correct: 0,
+            streak: 0, liveStars: 0, locked: false, wrong: [],
+            timeLeft: 0, timerId: null, used: {}
+        };
+        var lastRound = null;
+        var advanceTimerId = null;
+        var roundSeq = 0;
 
-        // Motivational Quiz Data
-        const motivationalQuestions = [
-            {
-                q: "إذا صممت 5 سفن فضائية وفي كل سفينة 7 رواد فضاء، كم رائد فضاء يستكشف المريخ معك؟ وماذا تقول لنفسك عندما تنجز ذلك؟",
-                options: [
-                    { text: "35 رائد فضاء - وأقول لنفسي: أنا قادِر على تحقيق أهدافي بالعمل والتركيز!", correct: true },
-                    { text: "30 رائد فضاء - الأرقام صعبة للغاية", correct: false },
-                    { text: "40 رائد فضاء - لا يهمني العدد", correct: false }
-                ],
-                tag: "مسألة الفضاء والتركيز"
-            },
-            {
-                q: "عندما تواجه مسألة ضرب صعبة في الاختبار، ما هو التصرف الذكي للبطل؟",
-                options: [
-                    { text: "أتوقف وأتنفس بهدوء، وأتذكر الجداول المجاورة لأصل للحل الصحيح", correct: true },
-                    { text: "أستسلم ولا أحاول التفكير", correct: false },
-                    { text: "أختار أي رقم عشوائي بسرعة بدون تفكير", correct: false }
-                ],
-                tag: "استراتيجيات التفكير"
-            },
-            {
-                q: "لديك 6 شجيرات زيتون، وكل شجرة تثمر 9 ثمار ذهبية. كيف يساعدك الضرب (6 × 9) في معرفة المحصول فوراً؟",
-                options: [
-                    { text: "يعطيني 54 ثمرة فوراً بدون الحاجة للعد الواحدة تلو الأخرى!", correct: true },
-                    { text: "يجعلني أعد الثمار واحدة واحدة لمدة طويلة", correct: false },
-                    { text: "النتيجة هي 45 ثمرة فقط", correct: false }
-                ],
-                tag: "فائدة الضرب في الحياة"
-            },
-            {
-                q: "ما هو شعورك عندما تتمرن على جدول الضرب يومياً لمدة 5 دقائق؟",
-                options: [
-                    { text: "أشعر بالفخر لأن عقلي يصبح أقوى وأسرع في البديهة مع كل تدريب!", correct: true },
-                    { text: "لا يتغير شيء في عقلي", correct: false },
-                    { text: "التدريب ليس مفيداً", correct: false }
-                ],
-                tag: "قوة العادة والتكرار"
-            },
-            {
-                q: "إذا وضعت هدفاً أن تحفظ جميع جداول الضرب من 1 إلى 10، فما هي الخطة الناجحة؟",
-                options: [
-                    { text: "حفظ جدول واحد كل يوم بتأنٍ ومراجعته مع اللعب والمرح!", correct: true },
-                    { text: "محاولة حفظ كل الجداول في ساعة واحدة بدون راحة", correct: false },
-                    { text: "تأجيل الحفظ دائماً وعدم البدء أبداً", correct: false }
-                ],
-                tag: "التخطيط والتفوق"
+        function cancelAdvance() {
+            if (advanceTimerId) { clearTimeout(advanceTimerId); advanceTimerId = null; }
+        }
+
+        function scheduleAdvance(delay, seq) {
+            cancelAdvance();
+            advanceTimerId = setTimeout(function () {
+                advanceTimerId = null;
+                if (seq !== roundSeq || !round.active) return;
+                advance();
+            }, delay);
+        }
+
+        function ri(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+        function shuffle(arr) {
+            for (var i = arr.length - 1; i > 0; i--) {
+                var j = Math.floor(Math.random() * (i + 1));
+                var t = arr[i]; arr[i] = arr[j]; arr[j] = t;
             }
-        ];
-
-        // Initialize App
-        window.addEventListener('load', () => {
-            buildTableButtons();
-            updateDashboardStars();
-            showRandomQuote();
-            initBackgroundCanvas();
-        });
-
-        function buildTableButtons() {
-            const grid = document.getElementById('tablesGrid');
-            grid.innerHTML = '';
-            for (let i = 1; i <= 12; i++) {
-                const btn = document.createElement('button');
-                btn.type = 'button';
-                btn.className = 'table-select-btn glass-button p-3 rounded-2xl flex flex-col items-center justify-center gap-1 hover:border-amber-400 group';
-                btn.setAttribute('aria-label', 'ابدأ تحدي جدول الضرب ' + i);
-
-                const label = document.createElement('span');
-                label.className = 'text-xs text-sky-300 font-semibold';
-                label.textContent = 'جدول';
-
-                const num = document.createElement('span');
-                num.className = 'text-2xl font-black group-hover:scale-125 transition-transform text-white';
-                num.textContent = String(i);
-
-                btn.appendChild(label);
-                btn.appendChild(num);
-                btn.addEventListener('click', () => selectTable(i));
-                grid.appendChild(btn);
-            }
+            return arr;
         }
 
-        function updateDashboardStars() {
-            document.getElementById('totalStars').innerText = totalStars;
-            persistStars();
-        }
-
-        function showRandomQuote() {
-            const rand = Math.floor(Math.random() * quotes.length);
-            document.getElementById('motivationalQuote').innerText = `"${quotes[rand]}"`;
-        }
-
-        function showToast(msg, icon = 'fa-star') {
-            const toast = document.getElementById('toast');
-            document.getElementById('toastMsg').innerText = msg;
-            document.getElementById('toastIcon').className = `fa-solid ${icon} text-amber-400`;
-            toast.classList.remove('hidden');
-            setTimeout(() => {
-                toast.classList.add('hidden');
-            }, 3000);
-        }
-
-        // Screen Navigation Functions
-        function hideAllScreens() {
-            ['screenHome', 'screenGame', 'screenMotivationalQuiz', 'screenResult'].forEach(id => {
-                const el = document.getElementById(id);
-                el.classList.add('hidden');
-                el.classList.remove('flex');
-            });
-            clearInterval(timerInterval);
+        function updateHud() {
+            var s = MAStore.getStats();
+            document.getElementById('hudStars').textContent = MA.fmt(s.starsEarned);
+            document.getElementById('hudBest').textContent = MA.fmt(s.bestStreak);
+            document.getElementById('hudBadges').textContent = MA.fmt(Object.keys(MAStore.getAchievements()).length);
+            document.getElementById('hudRounds').textContent = MA.fmt(s.roundsCompleted);
+            document.getElementById('liveStars').textContent = MA.fmt(s.starsEarned);
         }
 
         function showScreen(id) {
-            const el = document.getElementById(id);
-            el.classList.remove('hidden');
-            el.classList.add('flex');
+            ['screenHome', 'screenGame', 'screenResult'].forEach(function (s) {
+                document.getElementById(s).classList.toggle('is-active', s === id);
+            });
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        function goHome() {
-            playSound('click');
-            questionLocked = true;
-            hideAllScreens();
-            showScreen('screenHome');
-            showRandomQuote();
+        function renderSelections() {
+            document.querySelectorAll('[data-diff]').forEach(function (b) {
+                var on = b.getAttribute('data-diff') === state.difficulty;
+                b.classList.toggle('is-active', on);
+                b.setAttribute('aria-pressed', String(on));
+            });
+            document.querySelectorAll('[data-mode]').forEach(function (b) {
+                var on = b.getAttribute('data-mode') === state.mode;
+                b.classList.toggle('is-active', on);
+                b.setAttribute('aria-pressed', String(on));
+            });
+            document.querySelectorAll('.table-btn').forEach(function (b) {
+                var on = b.getAttribute('data-table') === String(state.table);
+                b.classList.toggle('is-active', on);
+                b.setAttribute('aria-pressed', String(on));
+            });
+            var isBoss = state.mode === 'boss';
+            document.getElementById('tableLabel').style.opacity = isBoss ? '.45' : '1';
+            var hint = document.getElementById('startHint');
+            if (isBoss) {
+                hint.textContent = 'الزعيم يتجاوز الإعدادات: 12 سؤالاً في 3 مراحل، مؤقّت 15 ثانية، والفوز يتطلب 8 إجابات صحيحة.';
+            } else if (state.difficulty === 'expert') {
+                hint.textContent = 'مستوى الخبير يختبرك حتى 15×12 ويتجاهل اختيار الجدول.';
+            } else if (state.table !== 'all' && (state.mode === 'timed' || state.mode === 'accuracy')) {
+                hint.textContent = 'ستُختبر أسئلة جدول ' + state.table + ' فقط.';
+            } else if (state.mode === 'free') {
+                hint.textContent = 'التدريب التكيّفي يختار الجداول تلقائياً حسب تقدّمك — أفضل خيار لمعالجة أخطائك.';
+            } else {
+                hint.textContent = 'اختر ما يناسبك ثم اضغط «ابدأ التحدي».';
+            }
         }
 
-        // Start Table Challenge
-        function selectTable(tableNum) {
-            playSound('click');
-            currentTable = tableNum;
-            generateQuestionList();
-            currentQuestionIndex = 0;
-            correctAnswersCount = 0;
-            streak = 0;
-            document.getElementById('streakCount').innerText = streak;
+        function buildTables() {
+            var grid = document.getElementById('tablesGrid');
+            grid.textContent = '';
+            for (var i = 1; i <= 12; i++) {
+                (function (n) {
+                    var btn = document.createElement('button');
+                    btn.type = 'button';
+                    btn.className = 'table-btn';
+                    btn.setAttribute('data-table', String(n));
+                    btn.setAttribute('aria-label', 'جدول الضرب ' + n);
+                    btn.appendChild(document.createTextNode(n));
+                    btn.addEventListener('click', function () { state.table = n; renderSelections(); MA.play('click'); });
+                    grid.appendChild(btn);
+                })(i);
+            }
+            var all = document.createElement('button');
+            all.type = 'button';
+            all.className = 'table-btn';
+            all.setAttribute('data-table', 'all');
+            all.setAttribute('aria-label', 'جميع الجداول من 1 إلى 12');
+            var small = document.createElement('small');
+            small.textContent = '1–12';
+            var big = document.createElement('span');
+            big.textContent = 'الكل';
+            all.appendChild(small);
+            all.appendChild(big);
+            all.addEventListener('click', function () { state.table = 'all'; renderSelections(); MA.play('click'); });
+            grid.appendChild(all);
+        }
 
-            hideAllScreens();
+        /* ---------- question building ---------- */
+        function weightedPair(minA, maxA, minB, maxB) {
+            var pairs = [], total = 0;
+            for (var a = minA; a <= maxA; a++) {
+                for (var b = minB; b <= maxB; b++) {
+                    var w = MAStore.adaptiveWeight(a, b);
+                    if (round.used[a + '*' + b]) w *= 0.25;
+                    pairs.push({ a: a, b: b, w: w });
+                    total += w;
+                }
+            }
+            if (!pairs.length) return { a: minA, b: minB };
+            var r = Math.random() * total;
+            for (var i = 0; i < pairs.length; i++) {
+                r -= pairs[i].w;
+                if (r <= 0) return { a: pairs[i].a, b: pairs[i].b };
+            }
+            var last = pairs[pairs.length - 1];
+            return { a: last.a, b: last.b };
+        }
+
+        function nextPair() {
+            var d = DIFF[state.difficulty];
+            if (state.difficulty === 'expert') return weightedPair(10, 15, 2, 12);
+            if (state.mode === 'mixed' || state.table === 'all' || state.mode === 'free') {
+                return weightedPair(d.minA, d.maxA, 1, 12);
+            }
+            var t = parseInt(state.table, 10);
+            var b = ri(1, 12);
+            if (round.used[t + '*' + b] && Object.keys(round.used).length < 12) b = ri(1, 12);
+            return { a: t, b: b };
+        }
+
+        function makeOptions(ans) {
+            var set = [ans], guard = 0;
+            var spread = Math.max(2, Math.round(ans * 0.25));
+            while (set.length < 4 && guard++ < 300) {
+                var off = ri(1, spread) * (Math.random() < 0.5 ? 1 : -1);
+                var v = ans + off;
+                if (v > 0 && set.indexOf(v) === -1) set.push(v);
+            }
+            var fillers = [ans + 1, ans + 2, ans + 3, ans + 4, ans - 1, ans - 2, ans - 3, ans - 4, ans + 10, ans + 20];
+            for (var i = 0; i < fillers.length && set.length < 4; i++) {
+                if (fillers[i] > 0 && set.indexOf(fillers[i]) === -1) set.push(fillers[i]);
+            }
+            var k = 1;
+            while (set.length < 4) { var extra = ans + k * 7 + 1; if (set.indexOf(extra) === -1) set.push(extra); k++; }
+            return shuffle(set);
+        }
+
+        function buildQuestions() {
+            var qs = [];
+            if (state.mode === 'boss') {
+                BOSS_PHASES.forEach(function (p, pi) {
+                    var sub = [];
+                    for (var i = 0; i < 4; i++) {
+                        var pr = weightedPair(p.minA, p.maxA, p.minB, p.maxB);
+                        sub.push({ a: pr.a, b: pr.b, phase: pi });
+                    }
+                    qs = qs.concat(shuffle(sub));
+                });
+                return qs;
+            }
+            var d = DIFF[state.difficulty];
+            for (var i = 0; i < d.count; i++) {
+                var pr2 = nextPair();
+                qs.push({ a: pr2.a, b: pr2.b, phase: 0 });
+            }
+            return qs;
+        }
+
+        function effectiveTime() {
+            var m = MODES[state.mode];
+            if (state.mode === 'boss') return BOSS_TIME;
+            if (!m.timer) return 0;
+            if (state.mode === 'mixed' && state.difficulty === 'easy') return 15;
+            return DIFF[state.difficulty].time;
+        }
+
+        function startRound(isReview) {
+            roundSeq++;
+            cancelAdvance();
+            stopTimer();
+            var qs;
+            if (isReview && lastRound && lastRound.wrong.length) {
+                qs = lastRound.wrong.map(function (w) { return { a: w.a, b: w.b, phase: 0, wasWrong: true }; });
+            } else {
+                qs = buildQuestions();
+            }
+            round = {
+                active: true, isReview: !!isReview, questions: qs, idx: 0, correct: 0,
+                streak: 0, liveStars: 0, locked: false, wrong: [],
+                timeLeft: 0, timerId: null, used: {}
+            };
+            document.getElementById('bossPanel').hidden = state.mode !== 'boss';
+            document.getElementById('modeLabel').textContent =
+                MODES[state.mode].label + ' · ' + DIFF[state.difficulty].label + (isReview ? ' · مراجعة' : '');
+            document.getElementById('progressWrap').setAttribute('aria-valuemax', String(qs.length));
+            updateHud();
             showScreen('screenGame');
-
+            MA.play('click');
             loadQuestion();
         }
 
-        function generateQuestionList() {
-            currentQuestionsList = [];
-            for (let i = 0; i < totalQuestions; i++) {
-                let numA, numB;
-                if (currentTable === 'all') {
-                    numA = Math.floor(Math.random() * 10) + 2; // 2 to 11
-                    numB = Math.floor(Math.random() * 12) + 1; // 1 to 12
-                } else {
-                    numA = currentTable;
-                    numB = (i + 1) > 12 ? Math.floor(Math.random() * 12) + 1 : (i + 1);
-                }
-                currentQuestionsList.push({ a: numA, b: numB, ans: numA * numB });
-            }
-            // Shuffle
-            currentQuestionsList.sort(() => Math.random() - 0.5);
-        }
-
-        function loadQuestion() {
-            if (currentQuestionIndex >= totalQuestions) {
-                finishGame();
-                return;
-            }
-
-            questionLocked = false;
-
-            // Update Counter & Progress
-            document.getElementById('questionCounter').innerText = `${currentQuestionIndex + 1} / ${totalQuestions}`;
-            const pct = ((currentQuestionIndex) / totalQuestions) * 100;
-            document.getElementById('progressBar').style.width = `${pct}%`;
-            document.getElementById('progressBarWrap').setAttribute('aria-valuenow', String(currentQuestionIndex));
-
-            const q = currentQuestionsList[currentQuestionIndex];
-            document.getElementById('numA').innerText = q.a;
-            document.getElementById('numB').innerText = q.b;
-
-            // Generate 4 Multiple Choice Options
-            const options = [q.ans];
-            let guard = 0;
-            while (options.length < 4 && guard < 1000) {
-                guard++;
-                // Generate close distractors
-                const offset = (Math.floor(Math.random() * 5) + 1) * (Math.random() < 0.5 ? 1 : -1);
-                const wrongAns = q.ans + offset;
-                if (wrongAns > 0 && !options.includes(wrongAns)) {
-                    options.push(wrongAns);
-                }
-            }
-            // Shuffle Options
-            options.sort(() => Math.random() - 0.5);
-
-            // Render Option Buttons
-            const grid = document.getElementById('optionsGrid');
-            grid.innerHTML = '';
-            options.forEach(opt => {
-                const btn = document.createElement('button');
-                btn.type = 'button';
-                btn.className = 'option-btn glass-button p-4 md:p-5 rounded-2xl text-2xl md:text-3xl font-black text-white hover:border-amber-400 hover:text-amber-300 flex items-center justify-center';
-                btn.innerText = opt;
-                btn.setAttribute('aria-label', 'الإجابة ' + opt);
-                btn.onclick = () => checkAnswer(opt, q.ans, btn);
-                grid.appendChild(btn);
-            });
-
-            // Encouragement message
-            const randEnc = encouragements[Math.floor(Math.random() * encouragements.length)];
-            document.getElementById('encouragementText').innerText = randEnc;
-
-            // Reset and Start Timer
-            startTimer();
-        }
-
-        function disableAllOptionButtons() {
-            document.querySelectorAll('.option-btn').forEach(b => {
-                b.disabled = true;
-                b.classList.remove('hover:border-amber-400', 'hover:text-amber-300');
-            });
+        function stopTimer() {
+            if (round.timerId) { clearInterval(round.timerId); round.timerId = null; }
         }
 
         function startTimer() {
-            clearInterval(timerInterval);
-            timeLeft = 15;
-            document.getElementById('timerDisplay').innerText = timeLeft;
-            document.getElementById('timerDisplay').className = "font-mono font-bold text-lg text-white";
-
-            timerInterval = setInterval(() => {
-                timeLeft--;
-                document.getElementById('timerDisplay').innerText = timeLeft;
-
-                if (timeLeft <= 5) {
-                    document.getElementById('timerDisplay').className = "font-mono font-bold text-lg text-rose-400 animate-ping";
+            stopTimer();
+            var t = effectiveTime();
+            var el = document.getElementById('timerDisplay');
+            if (t <= 0) {
+                el.textContent = '—';
+                el.style.color = 'var(--text-dim)';
+                return;
+            }
+            round.timeLeft = t;
+            el.textContent = MA.digits(t);
+            el.style.color = 'var(--text)';
+            round.timerId = setInterval(function () {
+                round.timeLeft--;
+                el.textContent = MA.digits(Math.max(0, round.timeLeft));
+                if (round.timeLeft <= 5) {
+                    el.style.color = 'var(--danger)';
+                    MA.play('tick');
                 }
-
-                if (timeLeft <= 0) {
-                    clearInterval(timerInterval);
-                    if (questionLocked) return;
-                    questionLocked = true;
-                    disableAllOptionButtons();
-                    playSound('wrong');
-                    highlightCorrectOption(currentQuestionsList[currentQuestionIndex].ans);
-                    setTimeout(() => {
-                        currentQuestionIndex++;
-                        streak = 0;
-                        document.getElementById('streakCount').innerText = streak;
-                        loadQuestion();
-                    }, 1500);
+                if (round.timeLeft <= 0) {
+                    stopTimer();
+                    if (round.locked) return;
+                    round.locked = true;
+                    timeOut();
                 }
             }, 1000);
         }
 
-        function checkAnswer(selected, correct, btnElement) {
-            if (questionLocked) return;
-            questionLocked = true;
-            clearInterval(timerInterval);
-
-            if (selected === correct) {
-                playSound('correct');
-                btnElement.classList.add('bg-emerald-500/80', 'border-emerald-400', 'text-white', 'scale-105');
-                correctAnswersCount++;
-                streak++;
-                totalStars += 2;
-                updateDashboardStars();
-                document.getElementById('streakCount').innerText = streak;
-
-                // Trigger Confetti Blast for streaks
-                if (streak % 3 === 0) {
-                    triggerConfetti();
-                    showToast(`سلسلة إجابات ممتازة! 🔥 ${streak} متتالية!`, 'fa-fire');
-                }
-
-                // Show Feedback Badge
-                const badge = document.getElementById('feedbackBadge');
-                badge.innerText = "ممتاز! إجابة صحيحة ⭐";
-                badge.classList.remove('hidden');
-                setTimeout(() => badge.classList.add('hidden'), 1200);
-
-            } else {
-                playSound('wrong');
-                btnElement.classList.add('bg-rose-600/80', 'border-rose-400', 'text-white');
-                streak = 0;
-                document.getElementById('streakCount').innerText = streak;
-
-                highlightCorrectOption(correct);
-            }
-
-            // Disable all option buttons
-            disableAllOptionButtons();
-
-            // Move to next question after delay
-            setTimeout(() => {
-                currentQuestionIndex++;
-                loadQuestion();
-            }, 1300);
+        function timeOut() {
+            if (!round.active || round.locked) return;
+            var q = round.questions[round.idx];
+            MA.play('wrong');
+            round.streak = 0;
+            document.getElementById('streakCount').textContent = '0';
+            round.wrong.push({ a: q.a, b: q.b, ans: q.a * q.b, chosen: -1 });
+            MAStore.recordAnswer(false, 'mult');
+            MAStore.bumpAdaptive(q.a, q.b, false);
+            highlightCorrect(q.a * q.b);
+            disableOptions();
+            document.getElementById('feedbackBadge').hidden = false;
+            document.getElementById('feedbackBadge').textContent = 'انتهى الوقت! الإجابة: ' + MA.fmt(q.a * q.b);
+            document.getElementById('feedbackBadge').className = 'ma-badge ma-badge--danger';
+            scheduleAdvance(1600, roundSeq);
         }
 
-        function highlightCorrectOption(correctVal) {
-            const allBtns = document.querySelectorAll('.option-btn');
-            allBtns.forEach(b => {
-                if (parseInt(b.innerText, 10) === correctVal) {
-                    b.classList.add('bg-emerald-500/80', 'border-emerald-400', 'animate-pulse');
-                }
+        function disableOptions() {
+            document.querySelectorAll('.opt-btn').forEach(function (b) { b.disabled = true; });
+        }
+
+        function highlightCorrect(val) {
+            document.querySelectorAll('.opt-btn').forEach(function (b) {
+                if (parseInt(b.getAttribute('data-value'), 10) === val) b.classList.add('is-correct');
             });
         }
 
-        function finishGame() {
-            playSound('win');
-            triggerConfetti();
-            hideAllScreens();
-            showScreen('screenResult');
+        function loadQuestion() {
+            if (round.idx >= round.questions.length) { finishRound(); return; }
+            round.locked = false;
+            var q = round.questions[round.idx];
+            var total = round.questions.length;
 
-            const pct = Math.round((correctAnswersCount / totalQuestions) * 100);
-            document.getElementById('resCorrect').innerText = `${correctAnswersCount} / ${totalQuestions}`;
-            document.getElementById('resPercentage').innerText = `${pct}%`;
+            document.getElementById('qCounter').textContent = (round.idx + 1) + ' / ' + total;
+            var pct = Math.round((round.idx / total) * 100);
+            document.getElementById('progressBar').style.width = pct + '%';
+            document.getElementById('progressWrap').setAttribute('aria-valuenow', String(round.idx));
 
-            // Per-answer stars (+2) are already added live during the game;
-            // award the performance bonus exactly once here.
-            let earnedStars = correctAnswersCount * 2;
-            if (pct >= 80) {
-                earnedStars += 5;
-                totalStars += 5;
-                updateDashboardStars();
+            document.getElementById('numA').textContent = MA.digits(q.a);
+            document.getElementById('numB').textContent = MA.digits(q.b);
+            var badge = document.getElementById('feedbackBadge');
+            badge.hidden = true;
+            badge.className = 'ma-badge ma-badge--success';
+
+            if (state.mode === 'boss') {
+                document.getElementById('bossPhase').textContent = BOSS_PHASES[q.phase].label;
+                renderBossHearts();
             }
-            document.getElementById('resStars').innerText = `+${earnedStars} ⭐`;
 
-            // Titles & Personal Messages
-            const titleEl = document.getElementById('resultTitle');
-            const motivEl = document.getElementById('resultMotivation');
+            var ans = q.a * q.b;
+            var opts = makeOptions(ans);
+            var grid = document.getElementById('optionsGrid');
+            grid.textContent = '';
+            opts.forEach(function (v) {
+                var btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'opt-btn';
+                btn.setAttribute('data-value', String(v));
+                btn.textContent = MA.fmt(v);
+                btn.setAttribute('aria-label', 'الإجابة ' + MA.fmt(v));
+                btn.addEventListener('click', function () { answer(v, btn); });
+                grid.appendChild(btn);
+            });
 
-            if (pct === 100) {
-                titleEl.innerText = "👑 عبقري جدول الضرب الخارق!";
-                motivEl.innerText = "أداء أسطوري! لم تخطئ في أي سؤال. عُقول القمة تبنى بهذا الإتقان!";
-            } else if (pct >= 80) {
-                titleEl.innerText = "🌟 إنجاز ممتاز جداً يا بطل!";
-                motivEl.innerText = "أنت قريب جداً من النتيجة الكاملة! واصل التكرار لتصبح الأسرع دائماً.";
+            document.getElementById('encouragementText').textContent =
+                ENCOURAGE[Math.floor(Math.random() * ENCOURAGE.length)];
+            startTimer();
+        }
+
+        function answer(selected, btn) {
+            if (round.locked || !round.active) return;
+            round.locked = true;
+            stopTimer();
+            var q = round.questions[round.idx];
+            var correctVal = q.a * q.b;
+            var isCorrect = selected === correctVal;
+
+            MAStore.recordAnswer(isCorrect, 'mult');
+            MAStore.bumpAdaptive(q.a, q.b, isCorrect);
+            round.used[q.a + '*' + q.b] = true;
+
+            var earned = 0;
+            if (isCorrect) {
+                round.correct++;
+                round.streak++;
+                earned = 2;
+                if (round.streak >= 3) earned += 1;
+                if (!round.isReview) { MAStore.addStars(earned); round.liveStars += earned; }
+                MAStore.recordStreak(round.streak);
+                MA.play('correct');
+                btn.classList.add('is-correct');
+                var fb = document.getElementById('feedbackBadge');
+                fb.hidden = false;
+                fb.className = 'ma-badge ma-badge--success';
+                fb.textContent = round.streak >= 3 ? 'سلسلة رائعة! +' + MA.digits(earned) + ' نجوم' : 'ممتاز! إجابة بطل ⭐';
+                if (round.streak > 0 && round.streak % 3 === 0) {
+                    MA.celebrate();
+                    MA.toast('سلسلة ' + MA.digits(round.streak) + ' إجابات صحيحة! 🔥', 'success');
+                }
+            } else {
+                round.streak = 0;
+                MA.play('wrong');
+                btn.classList.add('is-wrong');
+                round.wrong.push({ a: q.a, b: q.b, ans: correctVal, chosen: selected });
+                highlightCorrect(correctVal);
+            }
+
+            document.getElementById('streakCount').textContent = MA.digits(round.streak);
+            updateHud();
+            disableOptions();
+            scheduleAdvance(isCorrect ? 1200 : 1700, roundSeq);
+        }
+
+        function advance() {
+            round.idx++;
+            loadQuestion();
+        }
+
+        function renderBossHearts() {
+            var wrongSoFar = round.wrong.length;
+            var hearts = '';
+            for (var i = 0; i < BOSS_TOTAL; i++) hearts += (i < wrongSoFar) ? '🖤' : '💚';
+            document.getElementById('bossHearts').textContent = hearts;
+        }
+
+        function finishRound() {
+            cancelAdvance();
+            stopTimer();
+            round.active = false;
+            var total = round.questions.length;
+            var pct = total ? Math.round((round.correct / total) * 100) : 0;
+
+            var bonus = 0, lines = [];
+            lines.push({ k: 'إجابة صحيحة × 2', v: '+' + MA.fmt(round.correct * 2) + (round.isReview ? ' (بدون نقاط)' : '') });
+            var streakExtra = round.liveStars - round.correct * 2;
+            if (streakExtra > 0 && !round.isReview) lines.push({ k: 'مكافأة سلسلة ≥ 3', v: '+' + MA.fmt(streakExtra) });
+
+            if (!round.isReview) {
+                bonus += 5;
+                lines.push({ k: 'إكمال الجولة', v: '+5' });
+                if (total >= 10 && pct >= 90) {
+                    bonus += 5;
+                    MAStore.markFlag('_acc90');
+                    lines.push({ k: 'دقّة 90% فأعلى', v: '+5' });
+                }
+                if (state.mode === 'boss') {
+                    if (round.correct >= BOSS_WIN) {
+                        bonus += 10;
+                        MAStore.markFlag('_boss');
+                        lines.push({ k: 'هزيمة الزعيم', v: '+10' });
+                    } else {
+                        lines.push({ k: 'هزيمة الزعيم', v: 'تحتاج ' + MA.fmt(BOSS_WIN - round.correct) + ' صحيحة إضافية' });
+                    }
+                }
+                MAStore.addStars(bonus);
+            } else {
+                lines.push({ k: 'جولة مراجعة', v: '0 نجوم (تدرّب فقط)' });
+            }
+
+            var newly = MAStore.recordRound(0);
+            MAStore.recordBestScore('mult', round.liveStars + bonus);
+            updateHud();
+
+            lastRound = { questions: round.questions, wrong: round.wrong.slice(), correct: round.correct, total: total };
+
+            document.getElementById('resCorrect').textContent = MA.fmt(round.correct) + '/' + MA.fmt(total);
+            document.getElementById('resPercentage').textContent = MA.fmt(pct) + '%';
+            document.getElementById('resStars').textContent = round.isReview ? '0' : '+' + MA.fmt(round.liveStars + bonus);
+
+            var title = document.getElementById('resultTitle');
+            var sub = document.getElementById('resultSubtitle');
+            if (round.isReview) {
+                title.textContent = 'انتهت جولة المراجعة 💪';
+                sub.textContent = 'هذه جولة تدريبية بدون نقاط — لكني لاحظت تقدّمك: ' + MA.fmt(round.correct) + ' من ' + MA.fmt(total) + '.';
+            } else if (pct === 100) {
+                title.textContent = '👑 عبقري جدول الضرب الخارق!';
+                sub.textContent = 'أداء أسطوري! لم تخطئ في أي سؤال.';
+            } else if (pct >= 90) {
+                title.textContent = '🌟 إنجاز ممتاز جداً يا بطل!';
+                sub.textContent = 'دقّة عالية — أنت على بُعد خطوة من الكمال.';
             } else if (pct >= 50) {
-                titleEl.innerText = "👍 محاولة جيدة وتقدم ملحوظ!";
-                motivEl.innerText = "الممارسة هي سر النجاح في الرياضيات. حاول مرة أخرى وستحقق نتيجة أعلى!";
+                title.textContent = '👍 محاولة جيدة وتقدم ملحوظ!';
+                sub.textContent = 'الممارسة هي سر النجاح. أعد المحاولة لتحسين نتيجتك.';
             } else {
-                titleEl.innerText = "شجاع بالمحاولة! استمر في التعلم 💪";
-                motivEl.innerText = "كل بطل يمر بالتدريب، خذ استراحة قصيرة ثم واصل التمرين والتعلم!";
-            }
-        }
-
-        function replayCurrentMode() {
-            selectTable(currentTable);
-        }
-
-        /* Motivational Quiz Engine */
-        function openMotivationalQuiz() {
-            playSound('click');
-            motivationalQuizIndex = 0;
-            motivationalScore = 0;
-            hideAllScreens();
-            showScreen('screenMotivationalQuiz');
-            loadMotivationalQuestion();
-        }
-
-        function loadMotivationalQuestion() {
-            const data = motivationalQuestions[motivationalQuizIndex];
-            document.getElementById('mQuestionText').textContent = data.q;
-            document.getElementById('motivationalTag').textContent = data.tag;
-            document.getElementById('mQuizProgress').innerText = `سؤال ${motivationalQuizIndex + 1} من ${motivationalQuestions.length}`;
-            document.getElementById('nextMQuizBtn').classList.add('hidden');
-
-            const container = document.getElementById('mOptionsContainer');
-            container.innerHTML = '';
-
-            data.options.forEach((opt, idx) => {
-                const b = document.createElement('button');
-                b.type = 'button';
-                b.className = 'w-full text-right p-3.5 rounded-xl glass-button text-sm md:text-base font-semibold text-slate-100 hover:border-purple-400 hover:text-amber-300 transition flex items-start gap-2';
-
-                const badge = document.createElement('span');
-                badge.className = 'w-6 h-6 rounded-full bg-purple-500/30 flex items-center justify-center text-xs text-purple-300 flex-shrink-0 mt-0.5';
-                badge.textContent = String(idx + 1);
-
-                const text = document.createElement('span');
-                text.textContent = opt.text;
-
-                b.appendChild(badge);
-                b.appendChild(text);
-                b.onclick = () => selectMotivationalOption(opt, b);
-                container.appendChild(b);
-            });
-        }
-
-        function selectMotivationalOption(opt, btn) {
-            playSound(opt.correct ? 'correct' : 'wrong');
-
-            if (opt.correct) {
-                btn.classList.add('bg-emerald-600/80', 'border-emerald-400');
-                motivationalScore++;
-                totalStars += 3;
-                updateDashboardStars();
-            } else {
-                btn.classList.add('bg-rose-600/80', 'border-rose-400');
+                title.textContent = '💪 شجاع بالمحاولة! استمر في التعلم';
+                sub.textContent = 'خذ استراحة قصيرة ثم جرّب التدريب التكيّفي — سيركّز على أخطائك.';
             }
 
-            // Disable siblings
-            const container = document.getElementById('mOptionsContainer');
-            Array.from(container.children).forEach(c => c.disabled = true);
-
-            document.getElementById('nextMQuizBtn').classList.remove('hidden');
-        }
-
-        function nextMotivationalQuestion() {
-            playSound('click');
-            motivationalQuizIndex++;
-            if (motivationalQuizIndex < motivationalQuestions.length) {
-                loadMotivationalQuestion();
-            } else {
-                // Finish Motivational Quiz
-                triggerConfetti();
-                showToast("أحسنت! كسبت أوسمة تفكير إيجابي ونجوم إضافية! ⭐", "fa-brain");
-                goHome();
-            }
-        }
-
-        // Confetti Fireworks Effect
-        function triggerConfetti() {
-            if (typeof confetti === 'function') {
-                confetti({
-                    particleCount: 70,
-                    spread: 80,
-                    origin: { y: 0.6 }
-                });
-            }
-        }
-
-        // Animated Background Particle Stars Canvas
-        function initBackgroundCanvas() {
-            const canvas = document.getElementById('bgCanvas');
-            const ctx = canvas.getContext('2d');
-            if (!ctx) return;
-
-            const prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-            if (prefersReduced) {
-                canvas.style.display = 'none';
-                return;
-            }
-
-            let width = canvas.width = window.innerWidth;
-            let height = canvas.height = window.innerHeight;
-
-            window.addEventListener('resize', () => {
-                width = canvas.width = window.innerWidth;
-                height = canvas.height = window.innerHeight;
+            var bd = document.getElementById('scoreBreakdown');
+            bd.textContent = '';
+            lines.forEach(function (l) {
+                var row = document.createElement('div');
+                var k = document.createElement('span');
+                k.className = 'text-dim';
+                k.textContent = l.k;
+                var v = document.createElement('b');
+                v.textContent = l.v;
+                row.appendChild(k);
+                row.appendChild(v);
+                bd.appendChild(row);
             });
 
-            const particles = [];
-            for (let i = 0; i < 45; i++) {
-                particles.push({
-                    x: Math.random() * width,
-                    y: Math.random() * height,
-                    radius: Math.random() * 2 + 1,
-                    vx: (Math.random() - 0.5) * 0.4,
-                    vy: (Math.random() - 0.5) * 0.4,
-                    alpha: Math.random()
-                });
-            }
+            var rv = document.getElementById('reviewList');
+            rv.textContent = '';
+            var hasWrong = round.wrong.length > 0;
+            document.getElementById('reviewBox').hidden = false;
+            document.getElementById('reviewEmpty').hidden = hasWrong;
+            round.wrong.forEach(function (w, i) {
+                var row = document.createElement('div');
+                row.className = 'review-row';
+                var left = document.createElement('span');
+                left.textContent = (i + 1) + '. ' + MA.fmt(w.a) + ' × ' + MA.fmt(w.b) + ' = ' + MA.fmt(w.ans);
+                var right = document.createElement('span');
+                right.className = 'bad';
+                right.textContent = w.chosen === -1 ? 'انتهى الوقت' : 'اخترت ' + MA.fmt(w.chosen);
+                row.appendChild(left);
+                row.appendChild(right);
+                rv.appendChild(row);
+            });
 
-            function animate() {
-                ctx.clearRect(0, 0, width, height);
-                particles.forEach(p => {
-                    p.x += p.vx;
-                    p.y += p.vy;
+            var canReview = hasWrong && !round.isReview;
+            document.getElementById('btnReview').hidden = !canReview;
 
-                    if (p.x < 0) p.x = width;
-                    if (p.x > width) p.x = 0;
-                    if (p.y < 0) p.y = height;
-                    if (p.y > height) p.y = 0;
-
-                    ctx.beginPath();
-                    ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-                    ctx.fillStyle = `rgba(251, 191, 36, ${p.alpha})`;
-                    ctx.fill();
-                });
-                requestAnimationFrame(animate);
-            }
-            animate();
+            MA.play('win');
+            MA.celebrate();
+            MA.notifyNewAchievements(newly);
+            showScreen('screenResult');
         }
+
+        /* ---------- wiring ---------- */
+        document.querySelectorAll('[data-diff]').forEach(function (b) {
+            b.addEventListener('click', function () {
+                state.difficulty = b.getAttribute('data-diff');
+                renderSelections(); MA.play('click');
+            });
+        });
+        document.querySelectorAll('[data-mode]').forEach(function (b) {
+            b.addEventListener('click', function () {
+                state.mode = b.getAttribute('data-mode');
+                renderSelections(); MA.play('click');
+            });
+        });
+        document.getElementById('btnStart').addEventListener('click', function () { startRound(false); });
+        document.getElementById('btnHome').addEventListener('click', function () {
+            stopTimer();
+            cancelAdvance();
+            roundSeq++;
+            round.active = false; updateHud(); showScreen('screenHome'); MA.play('click');
+        });
+        document.getElementById('btnResultHome').addEventListener('click', function () {
+            updateHud(); showScreen('screenHome'); MA.play('click');
+        });
+        document.getElementById('btnReplay').addEventListener('click', function () { startRound(false); });
+        document.getElementById('btnReview').addEventListener('click', function () { startRound(true); });
+
+        buildTables();
+        renderSelections();
+        updateHud();
+        document.getElementById('motivationalQuote').textContent =
+            '"' + QUOTES[Math.floor(Math.random() * QUOTES.length)] + '"';
+
+        window.__MA_MULT__ = {
+            DIFF: DIFF,
+            MODES: MODES,
+            BOSS_PHASES: BOSS_PHASES,
+            makeOptions: makeOptions,
+            weightedPair: weightedPair,
+            buildQuestions: buildQuestions,
+            effectiveTime: effectiveTime,
+            startRound: startRound,
+            round: function () { return round; },
+            seq: function () { return roundSeq; },
+            cancelAdvance: cancelAdvance,
+            scheduleAdvance: scheduleAdvance,
+            answer: answer,
+            timeOut: timeOut,
+            cfg: state
+        };
+    })();
     </script>
 </body>
 </html>
