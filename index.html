@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="color-scheme" content="dark light">
-    <meta name="theme-color" content="#0f172a">
+    <meta name="theme-color" content="#23261e">
     <title>Math Adventures | مغامرات الرياضيات — تعلّم، تدرّب، واجمع الأوسمة</title>
     <meta name="description" content="منصة مغامرات الرياضيات: لعبة جدول الضرب، مغامرة القيمة المنزلية، تحدي يومي، أوراق عمل قابلة للطباعة، أوسمة إنجاز وتقدّم محفوظ — كل شيء يعمل في المتصفح بدون تسجيل.">
     <meta name="keywords" content="مغامرات الرياضيات, جدول الضرب, القيمة المنزلية, تحدي يومي, أوراق عمل, تعليم تفاعلي, رياضيات عربي">
@@ -16,7 +16,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://cdnjs.cloudflare.com">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/main.css">
     <style>
         .hero-lede { font-size: clamp(.95rem, 2.4vw, 1.08rem); }
@@ -62,6 +62,53 @@
     </header>
 
     <main id="main" class="container">
+        <h2 class="section-title"><i class="fa-solid fa-gamepad" aria-hidden="true"></i> الأدوات والألعاب</h2>
+        <div class="grid-2">
+            <a href="multiplication-heroes.html" class="ma-card ma-card--link ma-card--feature" aria-label="افتح أداة أبطال جدول الضرب">
+                <div class="flex-between">
+                    <span class="ma-card__icon ma-card__icon--green" aria-hidden="true"><i class="fa-solid fa-crown"></i></span>
+                    <span class="ma-badge">5 أوضاع لعب</span>
+                </div>
+                <h2>أبطال جدول الضرب</h2>
+                <p class="text-muted" style="font-size:.88rem">أربعة مستويات صعوبة، وتدريب تكيّفي يركّز على ضعفك، ومراجعة الأخطاء بعد كل جولة.</p>
+                <ul class="tool-ul">
+                    <li><i class="fa-solid fa-check" aria-hidden="true"></i> تدريب حر، وقت، دقة، مختلط، وزعيم</li>
+                    <li><i class="fa-solid fa-check" aria-hidden="true"></i> نجوم وأوسمة تُحفظ تلقائياً</li>
+                    <li><i class="fa-solid fa-check" aria-hidden="true"></i> جدول 1–12 وأسئلة حتى 15×12</li>
+                </ul>
+                <span class="ma-btn"><i class="fa-solid fa-play" aria-hidden="true"></i> ابدأ اللعب</span>
+            </a>
+
+            <a href="place-value-adventure.html" class="ma-card ma-card--link ma-card--feature" aria-label="افتح أداة مغامرة الأعداد والمنازل">
+                <div class="flex-between">
+                    <span class="ma-card__icon ma-card__icon--petrol" aria-hidden="true"><i class="fa-solid fa-layer-group"></i></span>
+                    <span class="ma-badge">مختبر + 3 ألعاب</span>
+                </div>
+                <h2>مغامرة الأعداد والمنازل</h2>
+                <p class="text-muted" style="font-size:.88rem">مختبر أعداد حتى 999,999 مع لوحة تفصيل لكل رقم، وثلاث ألعاب تدرّبك على المنازل.</p>
+                <ul class="tool-ul">
+                    <li><i class="fa-solid fa-check" aria-hidden="true"></i> اضغط أي رقم لترى منزلته وقيمته ومساهمته</li>
+                    <li><i class="fa-solid fa-check" aria-hidden="true"></i> صائد المنازل، باني الصيغة، وتحدي السرعة</li>
+                    <li><i class="fa-solid fa-check" aria-hidden="true"></i> الصيغة التحليلية واللفظية بالعربية</li>
+                </ul>
+                <span class="ma-btn"><i class="fa-solid fa-flask" aria-hidden="true"></i> ابدأ الاستكشاف</span>
+            </a>
+        </div>
+
+        <section class="ma-card ma-band mt-2 daily-card" aria-labelledby="dailyTitle">
+            <div class="flex" style="gap:14px">
+                <span class="ma-card__icon" style="margin:0" aria-hidden="true"><i class="fa-solid fa-calendar-day"></i></span>
+                <div>
+                    <h2 id="dailyTitle" style="margin:0;font-size:1.05rem">تحدي اليوم</h2>
+                    <p class="text-muted mb-0" style="font-size:.82rem">10 أسئلة متنوعة تتغيّر كل يوم — حاولها يومياً واجمع النجوم!</p>
+                </div>
+            </div>
+            <div class="flex" style="flex-wrap:wrap">
+                <span class="ma-badge ma-badge--muted" id="dailyState">لم يبدأ بعد</span>
+                <a class="ma-btn" href="daily-challenge.html"><i class="fa-solid fa-play" aria-hidden="true"></i> ابدأ تحدي اليوم</a>
+            </div>
+        </section>
+
         <section class="ma-card mt-2" aria-labelledby="progressTitle">
             <div class="flex-between mb-2">
                 <h2 id="progressTitle" class="section-title" style="margin:0"><i class="fa-solid fa-chart-line" aria-hidden="true"></i> تقدّمك حتى الآن</h2>
@@ -79,81 +126,30 @@
             </p>
         </section>
 
-        <section class="ma-card mt-2 daily-card" aria-labelledby="dailyTitle">
-            <div class="flex" style="gap:14px">
-                <span class="ma-card__icon" style="margin:0" aria-hidden="true"><i class="fa-solid fa-calendar-day"></i></span>
-                <div>
-                    <h2 id="dailyTitle" style="margin:0;font-size:1.05rem">تحدي اليوم</h2>
-                    <p class="text-dim mb-0" style="font-size:.82rem">10 أسئلة متنوعة تتغيّر كل يوم — حاولها يومياً واجمع النجوم!</p>
-                </div>
-            </div>
-            <div class="flex" style="flex-wrap:wrap">
-                <span class="ma-badge ma-badge--muted" id="dailyState">لم يبدأ بعد</span>
-                <a class="ma-btn" href="daily-challenge.html"><i class="fa-solid fa-play" aria-hidden="true"></i> ابدأ تحدي اليوم</a>
-            </div>
-        </section>
-
-        <h2 class="section-title"><i class="fa-solid fa-gamepad" aria-hidden="true"></i> الأدوات والألعاب</h2>
-        <div class="grid-2">
-            <a href="multiplication-heroes.html" class="ma-card ma-card--link" aria-label="افتح أداة أبطال جدول الضرب">
-                <div class="flex-between">
-                    <span class="ma-card__icon" aria-hidden="true"><i class="fa-solid fa-crown"></i></span>
-                    <span class="ma-badge">5 أوضاع لعب</span>
-                </div>
-                <h2>أبطال جدول الضرب</h2>
-                <p class="text-muted" style="font-size:.88rem">أربعة مستويات صعوبة، وتدريب تكيّفي يركّز على ضعفك، ومراجعة الأخطاء بعد كل جولة.</p>
-                <ul class="tool-ul">
-                    <li><i class="fa-solid fa-check" aria-hidden="true"></i> تدريب حر، وقت، دقة، مختلط، وزعيم</li>
-                    <li><i class="fa-solid fa-check" aria-hidden="true"></i> نجوم وأوسمة تُحفظ تلقائياً</li>
-                    <li><i class="fa-solid fa-check" aria-hidden="true"></i> جدول 1–12 وأسئلة حتى 15×12</li>
-                </ul>
-                <span class="ma-btn"><i class="fa-solid fa-play" aria-hidden="true"></i> ابدأ اللعب</span>
-            </a>
-
-            <a href="place-value-adventure.html" class="ma-card ma-card--link" aria-label="افتح أداة مغامرة الأعداد والمنازل">
-                <div class="flex-between">
-                    <span class="ma-card__icon" aria-hidden="true"><i class="fa-solid fa-layer-group"></i></span>
-                    <span class="ma-badge">مختبر + 3 ألعاب</span>
-                </div>
-                <h2>مغامرة الأعداد والمنازل</h2>
-                <p class="text-muted" style="font-size:.88rem">مختبر أعداد حتى 999,999 مع لوحة تفصيل لكل رقم، وثلاث ألعاب تدرّبك على المنازل.</p>
-                <ul class="tool-ul">
-                    <li><i class="fa-solid fa-check" aria-hidden="true"></i> اضغط أي رقم لترى منزلته وقيمته ومساهمته</li>
-                    <li><i class="fa-solid fa-check" aria-hidden="true"></i> صائد المنازل، باني الصيغة، وتحدي السرعة</li>
-                    <li><i class="fa-solid fa-check" aria-hidden="true"></i> الصيغة التحليلية واللفظية بالعربية</li>
-                </ul>
-                <span class="ma-btn"><i class="fa-solid fa-flask" aria-hidden="true"></i> ابدأ الاستكشاف</span>
-            </a>
-        </div>
-
-        <h2 class="section-title"><i class="fa-solid fa-compass" aria-hidden="true"></i> مزيد من الأنشطة</h2>
+        <h2 class="section-title"><i class="fa-solid fa-compass" aria-hidden="true"></i> مزيد</h2>
         <div class="grid-3">
-            <a href="daily-challenge.html" class="ma-card ma-card--link">
-                <span class="ma-card__icon" aria-hidden="true"><i class="fa-solid fa-calendar-day"></i></span>
-                <h3 style="font-size:1rem">تحدي اليوم</h3>
-                <p class="text-dim" style="font-size:.82rem;margin:0">10 أسئلة عشوائية ثابتة في اليوم نفسه، مع مكافأة أول إكمال.</p>
+            <a href="worksheets.html" class="ma-card ma-card--link ma-card--compact">
+                <span class="ma-card__icon ma-card__icon--brick" aria-hidden="true"><i class="fa-solid fa-file-lines"></i></span>
+                <h3>أوراق العمل</h3>
+                <p class="text-dim">صمّم ورقة عمل مخصّصة ثم اطبعها أو احفظها PDF في نقرات.</p>
             </a>
-            <a href="worksheets.html" class="ma-card ma-card--link">
-                <span class="ma-card__icon" aria-hidden="true"><i class="fa-solid fa-file-lines"></i></span>
-                <h3 style="font-size:1rem">أوراق عمل</h3>
-                <p class="text-dim" style="font-size:.82rem;margin:0">صمّم ورقة عمل مخصّصة ثم اطبعها أو احفظها PDF في نقرات.</p>
+            <a href="achievements.html" class="ma-card ma-card--link ma-card--compact">
+                <span class="ma-card__icon ma-card__icon--mustard" aria-hidden="true"><i class="fa-solid fa-medal"></i></span>
+                <h3>إنجازاتي</h3>
+                <p class="text-dim">9 أوسمة تُفتح تلقائياً كلما تدرّبت أكثر وحققت أهدافاً.</p>
             </a>
-            <a href="achievements.html" class="ma-card ma-card--link">
-                <span class="ma-card__icon" aria-hidden="true"><i class="fa-solid fa-medal"></i></span>
-                <h3 style="font-size:1rem">إنجازاتي</h3>
-                <p class="text-dim" style="font-size:.82rem;margin:0">9 أوسمة تُفتح تلقائياً كلما تدرّبت أكثر وحققت أهدافاً.</p>
+            <a href="settings.html" class="ma-card ma-card--link ma-card--compact">
+                <span class="ma-card__icon ma-card__icon--muted" aria-hidden="true"><i class="fa-solid fa-gear"></i></span>
+                <h3>الإعدادات</h3>
+                <p class="text-dim">بدّل المظهر ونوع الأرقام والصوت، ونزّل نسخة احتياطية من تقدّمك.</p>
             </a>
         </div>
 
-        <div class="ma-card mt-3 text-center">
-            <p class="text-muted mb-1" style="font-size:.88rem">
+        <div class="ma-card ma-card--compact mt-3 text-center">
+            <p class="text-muted mb-1" style="font-size:.85rem">
                 <i class="fa-solid fa-shield-halved" style="color:var(--success)" aria-hidden="true"></i>
                 كل الحسابات والبيانات تبقى داخل متصفحك فقط. لا حسابات، لا تتبّع، ولا خوادم خاصة.
             </p>
-            <div class="flex" style="justify-content:center">
-                <a class="ma-btn ma-btn--secondary" href="settings.html"><i class="fa-solid fa-gear" aria-hidden="true"></i> الإعدادات</a>
-                <a class="ma-btn ma-btn--ghost" href="https://github.com/k6h6/math" rel="noopener"><i class="fa-brands fa-github" aria-hidden="true"></i> الكود على GitHub</a>
-            </div>
         </div>
     </main>
 

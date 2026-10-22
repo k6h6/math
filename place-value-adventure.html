@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="color-scheme" content="dark">
-    <meta name="theme-color" content="#1e1b4b">
+    <meta name="theme-color" content="#23261e">
     <title>مغامرة الأعداد والمنازل | مغامرات الرياضيات</title>
     <meta name="description" content="أداة تعليمية تفاعلية لتعلّم القيمة المنزلية والأعداد حتى 999,999: مختبر أعداد مع لوحة تفصيل لكل رقم، وثلاث ألعاب تشمل تحدي السرعة بأنواع أسئلة الستة.">
     <meta name="keywords" content="القيمة المنزلية, الصيغة التحليلية, الأعداد, رياضيات, تعليم">
@@ -18,6 +18,79 @@
     <link rel="preconnect" href="https://cdnjs.cloudflare.com">
     <link rel="preconnect" href="https://cdn.tailwindcss.com">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        (function () {
+            var config = {
+                theme: {
+                    extend: {
+                        colors: {
+                            slate: {
+                                50: '#F6F5EF', 100: '#EFEDE4', 200: '#DEDCD1', 300: '#C9C7BA',
+                                400: '#A3A194', 500: '#8B9284', 600: '#6E7266', 700: '#55594E',
+                                800: '#3A3E34', 900: '#2A2D25', 950: '#1B1E19'
+                            },
+                            amber: {
+                                50: '#FBF6E9', 100: '#F6ECD2', 200: '#F6E7BF', 300: '#F2D489',
+                                400: '#E9C46A', 500: '#E3B341', 600: '#C79A2E', 700: '#A67F24',
+                                800: '#7E6210', 900: '#63500D', 950: '#4A3A08'
+                            },
+                            yellow: {
+                                50: '#FBF6E9', 100: '#F8EFD0', 200: '#F5E79B', 300: '#F5DF8E',
+                                400: '#EDCE5B', 500: '#E3B341', 600: '#C79A2E', 700: '#A67F24',
+                                800: '#7E6210', 900: '#63500D', 950: '#4A3A08'
+                            },
+                            emerald: {
+                                50: '#EFF7F2', 100: '#D9EEE4', 200: '#BFE5D3', 300: '#8FCBB2',
+                                400: '#6FBC9C', 500: '#4E9E7E', 600: '#3F8468', 700: '#356859',
+                                800: '#2A5247', 900: '#1F3D34', 950: '#16302A'
+                            },
+                            cyan: {
+                                50: '#EFF7F9', 100: '#DCEEF2', 200: '#C5E2E9', 300: '#93BECB',
+                                400: '#6FA9BA', 500: '#5593A3', 600: '#44798A', 700: '#386A78',
+                                800: '#2C5561', 900: '#234751', 950: '#1C3944'
+                            },
+                            blue: {
+                                50: '#EFF6F8', 100: '#DEEDF1', 200: '#C5E0E7', 300: '#9BC4D0',
+                                400: '#6FA6B6', 500: '#4E8899', 600: '#3E7180', 700: '#345D6A',
+                                800: '#2B4D57', 900: '#234049', 950: '#1A3138'
+                            },
+                            teal: {
+                                50: '#EFF7F2', 100: '#D9EEE4', 200: '#BEE5D6', 300: '#8FCBB2',
+                                400: '#6FBC9C', 500: '#4E9E7E', 600: '#3F8468', 700: '#356859',
+                                800: '#2A5247', 900: '#1F3D34', 950: '#16302A'
+                            },
+                            indigo: {
+                                50: '#F2F1F8', 100: '#E3E0F1', 200: '#CFC7E8', 300: '#B3A8DA',
+                                400: '#9086C9', 500: '#7468B5', 600: '#5B5096', 700: '#47407A',
+                                800: '#393361', 900: '#2A2550', 950: '#1A1633'
+                            },
+                            purple: {
+                                50: '#F9F3FA', 100: '#F1E5F4', 200: '#E7CFEC', 300: '#DDBCE4',
+                                400: '#C794D2', 500: '#AE73BC', 600: '#8E579C', 700: '#744880',
+                                800: '#5E3B67', 900: '#4A2F52', 950: '#3B2244'
+                            },
+                            red: {
+                                50: '#FBF1EF', 100: '#F6E0DB', 200: '#F2C6BC', 300: '#E8A395',
+                                400: '#DE8775', 500: '#D06D59', 600: '#A94A3A', 700: '#8E3D2F',
+                                800: '#7C3529', 900: '#5E2A20', 950: '#3D1D16'
+                            },
+                            rose: {
+                                50: '#FBF1EF', 100: '#F6E0DB', 200: '#F2C6BC', 300: '#E8A395',
+                                400: '#DE8775', 500: '#D06D59', 600: '#A94A3A', 700: '#8E3D2F',
+                                800: '#7C3529', 900: '#5E2A20', 950: '#3D1D16'
+                            },
+                            orange: {
+                                50: '#FBF3EE', 100: '#F7E4D8', 200: '#F0D0BC', 300: '#E8A473',
+                                400: '#DE8B52', 500: '#D97742', 600: '#B85F30', 700: '#974E27',
+                                800: '#733D20', 900: '#5C321B', 950: '#40220F'
+                            }
+                        }
+                    }
+                }
+            };
+            if (typeof tailwind !== 'undefined') tailwind.config = config;
+        })();
+    </script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
@@ -26,10 +99,7 @@
 
     <style>
         body {
-            font-family: 'Cairo', 'Tajawal', sans-serif;
-            background: linear-gradient(135deg, #1e1b4b 0%, #312e81 40%, #1e293b 100%);
-            min-height: 100vh;
-            color: #f8fafc;
+            font-family: 'Cairo', sans-serif;
             user-select: none;
             font-variant-numeric: lining-nums tabular-nums;
             -webkit-font-feature-settings: "lnum" 1, "tnum" 1;
@@ -47,9 +117,8 @@
         }
 
         .glass-card {
-            background: rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.15);
+            background: var(--surface);
+            border: 1px solid var(--surface-border);
         }
 
         .digit-box {
@@ -58,11 +127,6 @@
 
         .digit-box:hover {
             transform: translateY(-5px) scale(1.05);
-        }
-
-        :focus-visible {
-            outline: 3px solid #f59e0b;
-            outline-offset: 2px;
         }
 
         button:disabled {
@@ -77,7 +141,7 @@
             background: rgba(0,0,0,0.2);
         }
         ::-webkit-scrollbar-thumb {
-            background: rgba(255,255,255,0.3);
+            background: rgba(239,237,228,0.3);
             border-radius: 4px;
         }
 
@@ -87,15 +151,6 @@
         }
         .animate-bounce-short { animation: bounceShort 0.5s ease-in-out 2; }
 
-        @media (prefers-reduced-motion: reduce) {
-            .digit-box, .animate-pulse, .animate-bounce, .animate-spin, .animate-bounce-short {
-                animation: none !important;
-            }
-            * {
-                transition-duration: 0.01ms !important;
-            }
-        }
-
         .digit-btn {
             font: inherit;
             color: inherit;
@@ -103,17 +158,17 @@
             border: 0;
             cursor: pointer;
             padding: 4px 8px;
-            border-radius: 10px;
+            border-radius: var(--radius-md);
             transition: background .15s, box-shadow .15s;
         }
-        .digit-btn:hover { background: rgba(245, 158, 11, .15); }
+        .digit-btn:hover { background: rgba(227, 179, 65, .15); }
         .digit-btn.is-selected {
-            background: rgba(245, 158, 11, .25);
-            box-shadow: 0 0 0 2px #f59e0b;
+            background: rgba(227, 179, 65, .25);
+            box-shadow: 0 0 0 2px var(--accent);
         }
         #digitDetail dl { display: grid; grid-template-columns: auto 1fr; gap: 6px 14px; margin: 0; text-align: start; }
-        #digitDetail dt { color: #94a3b8; font-size: .8rem; font-weight: 700; }
-        #digitDetail dd { margin: 0; font-weight: 900; color: #f8fafc; font-size: .95rem; }
+        #digitDetail dt { color: var(--text-dim); font-size: .8rem; font-weight: 700; }
+        #digitDetail dd { margin: 0; font-weight: 900; color: var(--text); font-size: .95rem; }
     </style>
 </head>
 <body class="flex flex-col min-h-screen justify-between p-2 sm:p-4">
@@ -144,11 +199,11 @@
     <header class="w-full max-w-6xl mx-auto mb-4 mt-3">
         <div class="glass-card rounded-2xl p-4 flex flex-wrap items-center justify-between gap-4 shadow-2xl">
             <div class="flex items-center gap-3">
-                <div class="w-12 h-12 rounded-xl bg-gradient-to-tr from-yellow-400 to-amber-500 flex items-center justify-center text-2xl text-slate-900 shadow-lg font-black" aria-hidden="true">
+                <div class="w-12 h-12 rounded-xl bg-amber-500 flex items-center justify-center text-2xl text-slate-950 shadow-lg font-black" aria-hidden="true">
                     123
                 </div>
                 <div>
-                    <h1 class="text-xl sm:text-2xl font-black bg-clip-text text-transparent bg-gradient-to-r from-yellow-300 via-amber-200 to-white">
+                    <h1 class="text-xl sm:text-2xl font-black text-amber-300">
                         مغامرة الأعداد والمنازل
                     </h1>
                     <p class="text-xs text-slate-300">مختبر أعداد وألعاب القيمة المنزلية — حتى 999,999</p>
@@ -499,14 +554,14 @@
                 </div>
 
                 <div id="speedStartArea" class="text-center py-12">
-                    <div class="w-24 h-24 mx-auto mb-4 bg-gradient-to-tr from-cyan-500 to-blue-600 rounded-full flex items-center justify-center text-4xl text-white shadow-xl shadow-cyan-500/20 animate-bounce-short" aria-hidden="true">
+                    <div class="w-24 h-24 mx-auto mb-4 bg-cyan-700 rounded-full flex items-center justify-center text-4xl text-white shadow-xl shadow-cyan-500/20 animate-bounce-short" aria-hidden="true">
                         <i class="fa-solid fa-bolt"></i>
                     </div>
                     <h3 class="text-2xl font-black text-white mb-2">هل أنت مستعد للتحدي؟</h3>
                     <p class="text-slate-300 text-sm max-w-md mx-auto mb-6">
                         لديك 45 ثانية للإجابة على أسئلة متنوعة في القيمة المنزلية والصيغة التحليلية واللفظية!
                     </p>
-                    <button type="button" onclick="startSpeedGame()" class="bg-gradient-to-r from-amber-500 to-yellow-400 hover:from-amber-400 hover:to-yellow-300 text-slate-950 font-black text-lg px-8 py-3.5 rounded-2xl shadow-xl transition active:scale-95">
+                    <button type="button" onclick="startSpeedGame()" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-lg px-8 py-3.5 rounded-2xl shadow-xl transition active:scale-95">
                         <i class="fa-solid fa-play" aria-hidden="true"></i> ابدأ التحدي الآن
                     </button>
                 </div>

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="color-scheme" content="dark light">
-    <meta name="theme-color" content="#0f172a">
+    <meta name="theme-color" content="#23261e">
     <title>أبطال جدول الضرب | مغامرات الرياضيات</title>
     <meta name="description" content="لعبة جدول الضرب بخمسة أوضاع وأربعة مستويات صعوبة وتدريب تكيّفي يركّز على أخطائك، مع مراجعة بعد كل جولة وأوسمة ونجوم محفوظة.">
     <meta name="keywords" content="جدول الضرب, رياضيات, تعليم, لعبة, ضرب, تدريب تكيّفي">
@@ -16,45 +16,44 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://cdnjs.cloudflare.com">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <link rel="stylesheet" href="assets/css/main.css">
     <style>
-        .home-grid { display: grid; gap: 14px; }
         .pick-row { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
         .mode-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
         @media (max-width: 900px) { .mode-grid { grid-template-columns: repeat(2, 1fr); } }
         @media (max-width: 460px) { .mode-grid { grid-template-columns: 1fr; } }
         .mode-card {
-            text-align: start; padding: 14px; border-radius: 14px;
-            border: 2px solid var(--surface-border); background: var(--surface);
+            text-align: start; padding: 14px; border-radius: var(--radius);
+            border: 2px solid var(--line); background: var(--surface);
             color: var(--text); font-family: inherit; cursor: pointer; transition: all .15s;
         }
-        .mode-card:hover { border-color: var(--accent); }
-        .mode-card.is-active { border-color: var(--accent); background: var(--warning-soft); box-shadow: 0 0 0 1px var(--accent); }
-        .mode-card .m-ico { font-size: 1.3rem; display: block; margin-bottom: 6px; color: var(--accent); }
+        .mode-card:hover { border-color: var(--accent-ink); }
+        .mode-card.is-active { border-color: var(--accent-ink); background: var(--warning-soft); box-shadow: 0 0 0 1px var(--accent-ink); }
+        .mode-card .m-ico { font-size: 1.3rem; display: block; margin-bottom: 6px; color: var(--accent-ink); }
         .mode-card b { display: block; font-size: .92rem; margin-bottom: 3px; }
         .mode-card span.d { font-size: .72rem; color: var(--text-dim); font-weight: 600; line-height: 1.45; display: block; }
         .table-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; }
         @media (max-width: 640px) { .table-grid { grid-template-columns: repeat(4, 1fr); } }
         .table-btn {
-            min-height: 56px; border-radius: 14px; border: 2px solid var(--surface-border);
+            min-height: 56px; border-radius: var(--radius); border: 2px solid var(--line);
             background: var(--surface); color: var(--text); font-family: inherit;
             font-weight: 900; font-size: 1.15rem; cursor: pointer; transition: all .15s;
             display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0;
         }
         .table-btn small { font-size: .62rem; font-weight: 700; color: var(--text-dim); }
         .table-btn:hover { border-color: var(--accent-2); transform: translateY(-2px); }
-        .table-btn.is-active { border-color: var(--accent); background: var(--warning-soft); }
+        .table-btn.is-active { border-color: var(--accent-ink); background: var(--warning-soft); }
         .eq-row { display: flex; align-items: center; justify-content: center; gap: 14px; flex-wrap: wrap; font-size: clamp(2rem, 8vw, 3.6rem); font-weight: 900; margin: 10px 0 22px; }
-        .eq-a { color: var(--accent-2); } .eq-b { color: var(--danger); } .eq-op { color: var(--accent); } .eq-q { color: var(--text-dim); }
+        .eq-a { color: var(--accent-2); } .eq-b { color: var(--danger); } .eq-op { color: var(--accent-ink); } .eq-q { color: var(--text-dim); }
         .opt-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
         .opt-btn {
-            min-height: 68px; border-radius: 16px; border: 2px solid var(--surface-border);
+            min-height: 68px; border-radius: var(--radius); border: 2px solid var(--line);
             background: var(--surface); color: var(--text); font-family: inherit;
             font-weight: 900; font-size: 1.7rem; cursor: pointer; transition: transform .15s;
         }
-        .opt-btn:hover:not(:disabled) { transform: scale(1.03); border-color: var(--accent); }
+        .opt-btn:hover:not(:disabled) { transform: scale(1.03); border-color: var(--accent-ink); }
         .opt-btn:disabled { cursor: default; }
         .opt-btn.is-correct { background: var(--success-soft); border-color: var(--success); }
         .opt-btn.is-wrong { background: var(--danger-soft); border-color: var(--danger); }
@@ -64,7 +63,7 @@
         .review-row { display: flex; justify-content: space-between; gap: 12px; padding: 10px 4px; border-bottom: 1px dashed var(--surface-border); font-size: .9rem; }
         .review-row .ok { color: var(--success); font-weight: 800; }
         .review-row .bad { color: var(--danger); font-weight: 800; }
-        .score-breakdown { display: grid; gap: 6px; text-align: start; background: var(--surface); border: 1px solid var(--surface-border); border-radius: 12px; padding: 14px; font-size: .85rem; }
+        .score-breakdown { display: grid; gap: 6px; text-align: start; background: var(--surface); border: 1px solid var(--surface-border); border-radius: var(--radius); padding: 14px; font-size: .85rem; }
         .score-breakdown div { display: flex; justify-content: space-between; }
         .screen { display: none; flex-direction: column; gap: 16px; align-items: center; text-align: center; }
         .screen.is-active { display: flex; }
@@ -166,7 +165,7 @@
             <div class="ma-card" style="width:100%;max-width:860px;display:flex;gap:14px;align-items:center">
                 <span class="ma-card__icon" style="margin:0" aria-hidden="true"><i class="fa-solid fa-lightbulb"></i></span>
                 <div style="text-align:start">
-                    <b style="font-size:.8rem;color:var(--accent)">حكمة اليوم للعباقرة:</b>
+                    <b style="font-size:.8rem;color:var(--accent-ink)">حكمة اليوم للعباقرة:</b>
                     <p id="motivationalQuote" class="text-muted" style="font-size:.85rem;margin:2px 0 0">…</p>
                 </div>
             </div>
@@ -179,7 +178,7 @@
                 <span class="ma-badge ma-badge--muted" id="modeLabel">—</span>
                 <span class="ma-badge" id="qCounter">1 / 10</span>
                 <span class="flex" style="gap:6px">
-                    <i class="fa-solid fa-clock" style="color:var(--accent)" aria-hidden="true"></i>
+                    <i class="fa-solid fa-clock" style="color:var(--accent-ink)" aria-hidden="true"></i>
                     <b id="timerDisplay" style="font-size:1.05rem" aria-live="off">—</b>
                 </span>
                 <span class="ma-badge ma-badge--success"><i class="fa-solid fa-star" aria-hidden="true"></i> <span id="liveStars">0</span></span>
@@ -212,7 +211,7 @@
                 <div class="opt-grid" id="optionsGrid"></div>
             </div>
 
-            <div class="ma-card" style="width:100%;max-width:760px;padding:10px 14px;font-size:.82rem;color:var(--accent);font-weight:700">
+            <div class="ma-card" style="width:100%;max-width:760px;padding:10px 14px;font-size:.82rem;color:var(--accent-ink);font-weight:700">
                 <i class="fa-solid fa-face-smile-wink" aria-hidden="true"></i>
                 <span id="encouragementText">ركّز جيداً، أنت قادر على حلها!</span>
             </div>

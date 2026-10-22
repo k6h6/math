@@ -99,7 +99,7 @@ https://k6h6.github.io/math/
 
 - **Tailwind CSS (Play CDN)** — في `place-value-adventure.html` فقط (واجهته مبنية عليه).
 - **FontAwesome** — الأيقونات.
-- **Google Fonts (Cairo / Tajawal)** — الخطوط العربية.
+- **Google Fonts (Cairo)** — الخطوط العربية.
 - **canvas-confetti** — تأثير الاحتفال.
 - الصوت مبني على **Web Audio API أصلي** (لا Tone.js بعد الآن).
 
