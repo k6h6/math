@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="dark">
+    <meta name="theme-color" content="#0f172a">
+    <title>الصفحة غير موجودة | أدوات الرياضيات التفاعلية</title>
+    <meta name="robots" content="noindex">
+    <link rel="icon" type="image/svg+xml" href="assets/images/favicon.svg">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.tailwindcss.com">
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #311042 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+        :focus-visible { outline: 3px solid #f59e0b; outline-offset: 2px; }
+    </style>
+</head>
+<body class="flex items-center justify-center p-4">
+    <main class="glass-card rounded-3xl p-8 sm:p-12 max-w-lg w-full text-center">
+        <div class="w-20 h-20 mx-auto mb-5 rounded-full bg-gradient-to-tr from-rose-500 to-pink-600 flex items-center justify-center text-4xl text-white shadow-xl" aria-hidden="true">
+            <i class="fa-solid fa-compass"></i>
+        </div>
+        <h1 class="text-3xl font-black text-amber-300 mb-3">404 — الصفحة غير موجودة</h1>
+        <p class="text-slate-300 text-sm leading-relaxed mb-6">
+            عذراً، الرابط الذي طلبته غير صحيح أو تغيّر. يمكنك العودة إلى الصفحة الرئيسية للوصول إلى الأدوات التعليمية.
+        </p>
+        <a id="homeLink" href="./index.html"
+           class="inline-flex items-center gap-2 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-slate-950 font-black px-6 py-3 rounded-xl shadow-lg transition no-underline">
+            <i class="fa-solid fa-house" aria-hidden="true"></i> الصفحة الرئيسية
+        </a>
+    </main>
+
+    <script>
+        // GitHub Pages can serve this file at any unknown path under the
+        // repository subpath (e.g. /REPOSITORY/some/missing/page). Recover the
+        // site root so the home link keeps working under a repository URL.
+        (function () {
+            try {
+                var parts = window.location.pathname.split('/').filter(Boolean);
+                if (parts.length > 0) {
+                    var root = '/' + parts[0] + '/';
+                    document.getElementById('homeLink').setAttribute('href', root + 'index.html');
+                }
+            } catch (e) { /* keep the relative fallback */ }
+        })();
+    </script>
+</body>
+</html>

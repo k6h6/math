@@ -1,0 +1,1407 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="dark">
+    <meta name="theme-color" content="#1e1b4b">
+    <title>مغامرة الأعداد: القيمة المنزلية والصيغة التحليلية</title>
+    <meta name="description" content="أداة تعليمية تفاعلية لتعلّم القيمة المنزلية والأعداد حتى 999,999: مختبر الأعداد، صائد القيمة المنزلية، باني الصيغة التحليلية، وتحدي السرعة، مناسبة للصف الرابع الابتدائي.">
+    <meta name="keywords" content="القيمة المنزلية, الصيغة التحليلية, الأعداد, رياضيات, الصف الرابع, تعليم">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="مغامرة الأعداد: القيمة المنزلية والصيغة التحليلية">
+    <meta property="og:description" content="مختبر تفاعلي وألعاب لتعلّم القيمة المنزلية والصيغة التحليلية واللفظية للأعداد حتى مئات الألوف.">
+    <link rel="icon" type="image/svg+xml" href="assets/images/favicon.svg">
+    <link rel="apple-touch-icon" href="assets/images/favicon.svg">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.tailwindcss.com">
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <!-- Tone.js for Sound Effects -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <!-- Arabic Google Font: Tajawal -->
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Tajawal', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0284c7',
+                            600: '#0369a1',
+                            700: '#075985',
+                        }
+                    },
+                    keyframes: {
+                        bounceShort: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' }
+                        }
+                    },
+                    animation: {
+                        'bounce-short': 'bounceShort 0.5s ease-in-out 2'
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background: linear-gradient(135deg, #1e1b4b 0%, #312e81 40%, #1e293b 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+            user-select: none;
+            font-variant-numeric: lining-nums tabular-nums;
+            -webkit-font-feature-settings: "lnum" 1, "tnum" 1;
+            font-feature-settings: "lnum" 1, "tnum" 1;
+        }
+
+        input, select, textarea, button, span, div, p, h1, h2, h3 {
+            font-variant-numeric: lining-nums tabular-nums !important;
+            font-feature-settings: "lnum" 1, "tnum" 1 !important;
+        }
+
+        input {
+            user-select: text;
+            -webkit-user-select: text;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .digit-box {
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .digit-box:hover {
+            transform: translateY(-5px) scale(1.05);
+        }
+
+        :focus-visible {
+            outline: 3px solid #f59e0b;
+            outline-offset: 2px;
+        }
+
+        button:disabled {
+            cursor: not-allowed;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.2);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.3);
+            border-radius: 4px;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .digit-box, .animate-pulse, .animate-bounce, .animate-spin, .animate-bounce-short {
+                animation: none !important;
+            }
+            * {
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen justify-between p-2 sm:p-4" onclick="ensureAudioContext()">
+
+    <header class="w-full max-w-6xl mx-auto mb-4">
+        <div class="glass-card rounded-2xl p-4 flex flex-wrap items-center justify-between gap-4 shadow-2xl">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-xl bg-gradient-to-tr from-yellow-400 to-amber-500 flex items-center justify-center text-2xl text-slate-900 shadow-lg font-black" aria-hidden="true">
+                    <i class="fa-solid font-bold">123</i>
+                </div>
+                <div>
+                    <h1 class="text-xl sm:text-2xl font-black bg-clip-text text-transparent bg-gradient-to-r from-yellow-300 via-amber-200 to-white">
+                        <a href="index.html" class="hover:underline">مغامرة الأعداد والمنازل</a>
+                    </h1>
+                    <p class="text-xs text-slate-300">الصف الرابع الابتدائي - الأعداد ضمن مئات الألوف</p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3">
+                <div class="bg-slate-800/80 border border-amber-500/30 px-3 py-1.5 rounded-xl flex items-center gap-2">
+                    <i class="fa-solid fa-star text-amber-400 text-lg animate-pulse" aria-hidden="true"></i>
+                    <span class="sr-only">النجوم:</span>
+                    <span id="starCount" class="font-bold text-amber-300 text-lg" aria-live="polite">0</span>
+                </div>
+
+                <div class="bg-slate-800/80 border border-cyan-500/30 px-3 py-1.5 rounded-xl flex items-center gap-2">
+                    <i class="fa-solid fa-trophy text-cyan-400 text-lg" aria-hidden="true"></i>
+                    <span class="sr-only">النقاط:</span>
+                    <span id="scoreCount" class="font-bold text-cyan-300 text-lg" aria-live="polite">0</span>
+                </div>
+
+                <button type="button" id="soundToggleBtn" onclick="toggleAudio(event)" class="w-10 h-10 rounded-xl bg-slate-700/80 hover:bg-slate-600 flex items-center justify-center text-amber-400 transition-all border border-slate-500/30 shadow-md" title="تشغيل/إيقاف الصوت" aria-label="تشغيل أو إيقاف الصوت" aria-pressed="true">
+                    <i id="soundIcon" class="fa-solid fa-volume-high text-lg" aria-hidden="true"></i>
+                </button>
+            </div>
+        </div>
+
+        <nav class="flex flex-wrap gap-2 mt-3 justify-center sm:justify-start" aria-label="أقسام التطبيق">
+            <button type="button" onclick="switchTab('explore')" id="tab-explore" class="tab-btn active-tab flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-sm transition-all bg-amber-500 text-slate-950 shadow-lg" aria-pressed="true">
+                <i class="fa-solid fa-flask" aria-hidden="true"></i>
+                مختبر الأعداد
+            </button>
+            <button type="button" onclick="switchTab('hunter')" id="tab-hunter" class="tab-btn flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-sm transition-all bg-slate-800/80 hover:bg-slate-700 text-slate-200 border border-slate-700" aria-pressed="false">
+                <i class="fa-solid fa-bullseye" aria-hidden="true"></i>
+                صائد القيمة المنزلية
+            </button>
+            <button type="button" onclick="switchTab('builder')" id="tab-builder" class="tab-btn flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-sm transition-all bg-slate-800/80 hover:bg-slate-700 text-slate-200 border border-slate-700" aria-pressed="false">
+                <i class="fa-solid fa-puzzle-piece" aria-hidden="true"></i>
+                باني الصيغة التحليلية
+            </button>
+            <button type="button" onclick="switchTab('speed')" id="tab-speed" class="tab-btn flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-sm transition-all bg-slate-800/80 hover:bg-slate-700 text-slate-200 border border-slate-700" aria-pressed="false">
+                <i class="fa-solid fa-bolt text-yellow-400" aria-hidden="true"></i>
+                تحدي السرعة
+            </button>
+        </nav>
+    </header>
+
+    <main class="w-full max-w-6xl mx-auto flex-1">
+
+        <section id="sec-explore" class="tab-section space-y-6">
+            <div class="glass-card rounded-2xl p-4 sm:p-6 border-indigo-500/30">
+                <div class="flex flex-col md:flex-row justify-between items-center gap-4 mb-6">
+                    <div>
+                        <h2 class="text-xl font-black text-amber-300 flex items-center gap-2">
+                            <i class="fa-solid fa-microscope" aria-hidden="true"></i>
+                            مختبر الأعداد التفاعلي
+                        </h2>
+                        <p class="text-slate-300 text-sm mt-1">اكتب أي عدد حتى 999,999 أو حرك المنازل لتكتشف كيف يتكون وسماع قيمته المنزلية!</p>
+                    </div>
+
+                    <div class="flex items-center gap-2 w-full md:w-auto">
+                        <label for="labNumberInput" class="text-sm font-bold text-slate-300 whitespace-nowrap">العدد:</label>
+                        <input type="text" id="labNumberInput" value="472305"
+                               inputmode="numeric" autocomplete="off" spellcheck="false"
+                               aria-describedby="labInputHint"
+                               class="w-full md:w-48 bg-slate-900/90 border-2 border-amber-400/50 rounded-xl px-4 py-2 text-xl font-black text-amber-300 text-center tracking-widest focus:outline-none focus:border-amber-400 font-mono"
+                               oninput="updateLabFromInput(this.value)"
+                               onblur="updateLabDisplay(true)">
+                        <button type="button" onclick="generateRandomLabNumber()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold px-4 py-2.5 rounded-xl shadow transition active:scale-95 whitespace-nowrap">
+                            <i class="fa-solid fa-shuffle" aria-hidden="true"></i> عشوائي
+                        </button>
+                    </div>
+                </div>
+                <p id="labInputHint" class="text-xs text-slate-400 -mt-3 mb-4">يقبل الأرقام العربية (٠-٩) والإنجليزية (0-9). القيمة من 0 إلى 999,999.</p>
+
+                <div class="grid grid-cols-2 gap-2 mb-2 text-center font-bold text-sm sm:text-base">
+                    <div class="bg-teal-900/60 border border-teal-400/40 py-2 rounded-t-xl text-teal-200 flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-cubes" aria-hidden="true"></i> دورة الأحاد
+                    </div>
+                    <div class="bg-indigo-900/60 border border-indigo-400/40 py-2 rounded-t-xl text-indigo-200 flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-layer-group" aria-hidden="true"></i> دورة الألوف
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-6 gap-1.5 sm:gap-3 text-center">
+
+                    <!-- 1. آحاد -->
+                    <div class="bg-slate-900/80 border-2 border-red-500/40 rounded-xl p-2 sm:p-3 flex flex-col justify-between digit-box shadow-lg">
+                        <span class="text-[10px] sm:text-xs font-bold text-red-300">آحاد</span>
+                        <div class="my-2">
+                            <span id="digit-0" class="text-2xl sm:text-4xl font-black text-red-400">5</span>
+                        </div>
+                        <span class="text-[10px] text-slate-400 border-t border-slate-700/60 pt-1 font-mono">1</span>
+                        <div class="flex justify-center gap-1 mt-2">
+                            <button type="button" onclick="changeDigit(0, 1)" class="w-8 h-8 sm:w-7 sm:h-7 rounded bg-red-600/50 hover:bg-red-500 text-white font-bold text-sm shadow transition active:scale-90" aria-label="زيادة الآحاد">+</button>
+                            <button type="button" onclick="changeDigit(0, -1)" class="w-8 h-8 sm:w-7 sm:h-7 rounded bg-red-600/50 hover:bg-red-500 text-white font-bold text-sm shadow transition active:scale-90" aria-label="إنقاص الآحاد">-</button>
+                        </div>
+                    </div>
+
+                    <!-- 2. عشرات -->
+                    <div class="bg-slate-900/80 border-2 border-orange-500/40 rounded-xl p-2 sm:p-3 flex flex-col justify-between digit-box shadow-lg">
+                        <span class="text-[10px] sm:text-xs font-bold text-orange-300">عشرات</span>
+                        <div class="my-2">
+                            <span id="digit-1" class="text-2xl sm:text-4xl font-black text-orange-400">0</span>
+                        </div>
+                        <span class="text-[10px] text-slate-400 border-t border-slate-700/60 pt-1 font-mono">10</span>
+                        <div class="flex justify-center gap-1 mt-2">
+                            <button type="button" onclick="changeDigit(1, 1)" class="w-8 h-8 sm:w-7 sm:h-7 rounded bg-orange-600/50 hover:bg-orange-500 text-white font-bold text-sm shadow transition active:scale-90" aria-label="زيادة العشرات">+</button>
+                            <button type="button" onclick="changeDigit(1, -1)" class="w-8 h-8 sm:w-7 sm:h-7 rounded bg-orange-600/50 hover:bg-orange-500 text-white font-bold text-sm shadow transition active:scale-90" aria-label="إنقاص العشرات">-</button>
+                        </div>
+                    </div>
+
+                    <!-- 3. مئات -->
+                    <div class="bg-slate-900/80 border-2 border-yellow-500/40 rounded-xl p-2 sm:p-3 flex flex-col justify-between digit-box shadow-lg">
+                        <span class="text-[10px] sm:text-xs font-bold text-yellow-300">مئات</span>
+                        <div class="my-2">
+                            <span id="digit-2" class="text-2xl sm:text-4xl font-black text-yellow-400">3</span>
+                        </div>
+                        <span class="text-[10px] text-slate-400 border-t border-slate-700/60 pt-1 font-mono">100</span>
+                        <div class="flex justify-center gap-1 mt-2">
+                            <button type="button" onclick="changeDigit(2, 1)" class="w-8 h-8 sm:w-7 sm:h-7 rounded bg-yellow-600/50 hover:bg-yellow-500 text-white font-bold text-sm shadow transition active:scale-90" aria-label="زيادة المئات">+</button>
+                            <button type="button" onclick="changeDigit(2, -1)" class="w-8 h-8 sm:w-7 sm:h-7 rounded bg-yellow-600/50 hover:bg-yellow-500 text-white font-bold text-sm shadow transition active:scale-90" aria-label="إنقاص المئات">-</button>
+                        </div>
+                    </div>
+
+                    <!-- 4. أحاد الألوف -->
+                    <div class="bg-slate-900/80 border-2 border-emerald-500/40 rounded-xl p-2 sm:p-3 flex flex-col justify-between digit-box shadow-lg">
+                        <span class="text-[10px] sm:text-xs font-bold text-emerald-300">أحاد الألوف</span>
+                        <div class="my-2">
+                            <span id="digit-3" class="text-2xl sm:text-4xl font-black text-emerald-400">2</span>
+                        </div>
+                        <span class="text-[10px] text-slate-400 border-t border-slate-700/60 pt-1 font-mono">1,000</span>
+                        <div class="flex justify-center gap-1 mt-2">
+                            <button type="button" onclick="changeDigit(3, 1)" class="w-8 h-8 sm:w-7 sm:h-7 rounded bg-emerald-600/50 hover:bg-emerald-500 text-white font-bold text-sm shadow transition active:scale-90" aria-label="زيادة أحاد الألوف">+</button>
+                            <button type="button" onclick="changeDigit(3, -1)" class="w-8 h-8 sm:w-7 sm:h-7 rounded bg-emerald-600/50 hover:bg-emerald-500 text-white font-bold text-sm shadow transition active:scale-90" aria-label="إنقاص أحاد الألوف">-</button>
+                        </div>
+                    </div>
+
+                    <!-- 5. عشرات الألوف -->
+                    <div class="bg-slate-900/80 border-2 border-cyan-500/40 rounded-xl p-2 sm:p-3 flex flex-col justify-between digit-box shadow-lg">
+                        <span class="text-[10px] sm:text-xs font-bold text-cyan-300">عشرات الألوف</span>
+                        <div class="my-2">
+                            <span id="digit-4" class="text-2xl sm:text-4xl font-black text-cyan-400">7</span>
+                        </div>
+                        <span class="text-[10px] text-slate-400 border-t border-slate-700/60 pt-1 font-mono">10,000</span>
+                        <div class="flex justify-center gap-1 mt-2">
+                            <button type="button" onclick="changeDigit(4, 1)" class="w-8 h-8 sm:w-7 sm:h-7 rounded bg-cyan-600/50 hover:bg-cyan-500 text-white font-bold text-sm shadow transition active:scale-90" aria-label="زيادة عشرات الألوف">+</button>
+                            <button type="button" onclick="changeDigit(4, -1)" class="w-8 h-8 sm:w-7 sm:h-7 rounded bg-cyan-600/50 hover:bg-cyan-500 text-white font-bold text-sm shadow transition active:scale-90" aria-label="إنقاص عشرات الألوف">-</button>
+                        </div>
+                    </div>
+
+                    <!-- 6. مئات الألوف -->
+                    <div class="bg-slate-900/80 border-2 border-purple-500/40 rounded-xl p-2 sm:p-3 flex flex-col justify-between digit-box shadow-lg">
+                        <span class="text-[10px] sm:text-xs font-bold text-purple-300">مئات الألوف</span>
+                        <div class="my-2">
+                            <span id="digit-5" class="text-2xl sm:text-4xl font-black text-purple-400">4</span>
+                        </div>
+                        <span class="text-[10px] text-slate-400 border-t border-slate-700/60 pt-1 font-mono">100,000</span>
+                        <div class="flex justify-center gap-1 mt-2">
+                            <button type="button" onclick="changeDigit(5, 1)" class="w-8 h-8 sm:w-7 sm:h-7 rounded bg-purple-600/50 hover:bg-purple-500 text-white font-bold text-sm shadow transition active:scale-90" aria-label="زيادة مئات الألوف">+</button>
+                            <button type="button" onclick="changeDigit(5, -1)" class="w-8 h-8 sm:w-7 sm:h-7 rounded bg-purple-600/50 hover:bg-purple-500 text-white font-bold text-sm shadow transition active:scale-90" aria-label="إنقاص مئات الألوف">-</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="glass-card p-5 rounded-2xl border-t-4 border-amber-400">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-amber-300 font-bold text-sm">1. الصيغة القياسية</span>
+                        <i class="fa-solid fa-calculator text-amber-400" aria-hidden="true"></i>
+                    </div>
+                    <p class="text-xs text-slate-300 mb-3">كتابة العدد بالخانات والأرقام المعتادة:</p>
+                    <div id="displayStandardForm" dir="ltr" class="bg-slate-900/90 p-3 rounded-xl text-center text-2xl font-black text-white tracking-widest font-mono border border-slate-700">
+                        472,305
+                    </div>
+                </div>
+
+                <div class="glass-card p-5 rounded-2xl border-t-4 border-emerald-400">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-emerald-300 font-bold text-sm">2. الصيغة التحليلية</span>
+                        <i class="fa-solid fa-diagram-project text-emerald-400" aria-hidden="true"></i>
+                    </div>
+                    <p class="text-xs text-slate-300 mb-3">تمثيل العدد كمجموع القيم المنزلية:</p>
+                    <div id="displayExpandedForm" dir="ltr" class="bg-slate-900/90 p-3 rounded-xl text-center text-sm sm:text-base font-bold text-emerald-300 font-mono border border-slate-700 overflow-x-auto whitespace-nowrap">
+                        400,000 + 70,000 + 2,000 + 300 + 5
+                    </div>
+                </div>
+
+                <div class="glass-card p-5 rounded-2xl border-t-4 border-cyan-400">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-cyan-300 font-bold text-sm">3. الصيغة اللفظية</span>
+                        <button type="button" onclick="speakWordForm()" class="text-xs bg-cyan-600 hover:bg-cyan-500 text-white px-2 py-1 rounded-lg transition flex items-center gap-1 shadow" title="استمع إلى قراءة العدد">
+                            <i class="fa-solid fa-volume-high" aria-hidden="true"></i> نطق
+                        </button>
+                    </div>
+                    <p class="text-xs text-slate-300 mb-3">كتابة العدد بالكلمات والحرُوف:</p>
+                    <div id="displayWordForm" class="bg-slate-900/90 p-3 rounded-xl text-center text-sm font-bold text-cyan-200 border border-slate-700 min-h-[58px] flex items-center justify-center leading-relaxed">
+                        أربعمائة واثنان وسبعون ألفاً وثلاثمائة وخمسة
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-card p-5 rounded-2xl">
+                <h3 class="text-base font-bold text-yellow-300 mb-3 flex items-center gap-2">
+                    <i class="fa-solid fa-shapes" aria-hidden="true"></i>
+                    تمثيل القيمة المنزلية لكل رقم في هذا العدد:
+                </h3>
+                <div id="placeValueCardsContainer" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
+                </div>
+            </div>
+        </section>
+
+        <section id="sec-hunter" class="tab-section hidden space-y-6">
+            <div class="glass-card rounded-2xl p-4 sm:p-6 relative overflow-hidden">
+                <div class="flex flex-wrap items-center justify-between gap-4 mb-6 pb-4 border-b border-slate-700">
+                    <div>
+                        <span class="bg-amber-500/20 text-amber-300 border border-amber-500/40 text-xs px-3 py-1 rounded-full font-bold">
+                            اللعبة الأولى: صائد القيمة المنزلية
+                        </span>
+                        <h2 class="text-xl sm:text-2xl font-black text-white mt-2">
+                            حدد القيمة المنزلية للرقم الملوّن!
+                        </h2>
+                    </div>
+
+                    <div class="flex items-center gap-4">
+                        <div class="text-center">
+                            <span class="text-xs text-slate-400 block">السلسلة الحالية</span>
+                            <span id="hunterStreak" class="text-2xl font-black text-emerald-400">0 🔥</span>
+                        </div>
+                        <div class="text-center">
+                            <span class="text-xs text-slate-400 block">المرحلة</span>
+                            <span id="hunterLevel" class="text-2xl font-black text-cyan-400">1</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900/90 rounded-2xl p-6 sm:p-10 border-2 border-indigo-500/40 text-center shadow-2xl my-4">
+                    <p class="text-slate-300 text-sm sm:text-lg mb-4">ما هي القيمة المنزلية للرقم الملوّن باللون الأصفر؟</p>
+
+                    <div id="hunterNumberDisplay" dir="ltr" class="text-3xl sm:text-5xl font-black tracking-widest my-6 font-mono text-slate-200" aria-live="polite">
+                    </div>
+
+                    <p id="hunterPlaceHint" class="text-xs sm:text-sm text-cyan-300/80 mb-6 font-medium">
+                    </p>
+
+                    <div id="hunterOptionsGrid" class="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 max-w-3xl mx-auto">
+                    </div>
+                </div>
+
+                <div id="hunterFeedback" class="hidden rounded-xl p-4 text-center font-bold text-lg transition-all" role="status" aria-live="polite">
+                </div>
+            </div>
+        </section>
+
+        <section id="sec-builder" class="tab-section hidden space-y-6">
+            <div class="glass-card rounded-2xl p-4 sm:p-6">
+                <div class="flex flex-wrap items-center justify-between gap-4 mb-6 pb-4 border-b border-slate-700">
+                    <div>
+                        <span class="bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 text-xs px-3 py-1 rounded-full font-bold">
+                            اللعبة الثانية: باني الصيغة التحليلية
+                        </span>
+                        <h2 class="text-xl sm:text-2xl font-black text-white mt-2">
+                            اختر القيم المنزلية الصحيحة لتكوين العدد المطلوب!
+                        </h2>
+                    </div>
+                    <button type="button" onclick="startNewBuilderRound()" class="bg-slate-800 hover:bg-slate-700 text-emerald-400 border border-emerald-500/30 font-bold px-4 py-2 rounded-xl text-sm transition">
+                        <i class="fa-solid fa-rotate-right" aria-hidden="true"></i> سؤال جديد
+                    </button>
+                </div>
+
+                <div class="bg-slate-900/90 rounded-2xl p-6 border-2 border-emerald-500/40 text-center mb-6">
+                    <p class="text-slate-300 text-sm mb-2">العدد المطلوب بالصيغة القياسية هو:</p>
+                    <div id="builderTargetNumber" dir="ltr" class="text-3xl sm:text-5xl font-black text-amber-300 tracking-widest font-mono my-2">
+                        638,514
+                    </div>
+                    <p class="text-xs text-slate-400">انقر على بطاقات القيمة المنزلية بالأسفل لتجميع الصيغة التحليلية المناسبة:</p>
+                </div>
+
+                <div class="bg-slate-950/70 rounded-2xl p-4 sm:p-6 border border-slate-700">
+                    <h3 class="text-xs font-bold text-slate-400 mb-3 text-center">الصيغة التحليلية الحالية التي قمت بتجميعها: (انقر أي بطاقة مختارة لإزالتها)</h3>
+                    <div id="builderSlotContainer" dir="ltr" class="flex flex-wrap items-center justify-center gap-2 min-h-[60px] p-2 bg-slate-900/80 rounded-xl border border-dashed border-slate-600 font-mono">
+                        <span class="text-slate-500 italic text-sm" dir="rtl">انقر الأرقام بالأسفل للإضافة...</span>
+                    </div>
+
+                    <div class="flex justify-center gap-3 mt-4 flex-wrap">
+                        <button type="button" onclick="clearBuilderSelection()" class="bg-rose-900/50 hover:bg-rose-800 text-rose-200 border border-rose-500/30 font-bold px-4 py-2 rounded-xl text-sm transition">
+                            <i class="fa-solid fa-trash-can" aria-hidden="true"></i> مسح الاختيار
+                        </button>
+                        <button type="button" onclick="checkBuilderAnswer()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-6 py-2 rounded-xl text-sm transition shadow-lg shadow-emerald-600/30">
+                            <i class="fa-solid fa-check" aria-hidden="true"></i> تحقق من الإجابة
+                        </button>
+                    </div>
+                </div>
+
+                <div class="mt-6">
+                    <h3 class="text-sm font-bold text-slate-300 mb-3">البطاقات المتاحة:</h3>
+                    <div id="builderCardsPool" dir="ltr" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                    </div>
+                </div>
+
+                <div id="builderFeedback" class="hidden rounded-xl p-4 text-center font-bold text-lg transition-all mt-4" role="status" aria-live="polite">
+                </div>
+            </div>
+        </section>
+
+        <section id="sec-speed" class="tab-section hidden space-y-6">
+            <div class="glass-card rounded-2xl p-4 sm:p-6">
+                <div class="flex flex-wrap items-center justify-between gap-4 mb-6 pb-4 border-b border-slate-700">
+                    <div>
+                        <span class="bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 text-xs px-3 py-1 rounded-full font-bold">
+                            التحدي السريع: سباق العباقرة
+                        </span>
+                        <h2 class="text-xl sm:text-2xl font-black text-white mt-2">
+                            أجب على أكبر عدد من الأسئلة قبل انتهاء الوقت!
+                        </h2>
+                    </div>
+
+                    <div class="bg-slate-900 border-2 border-amber-500/50 px-5 py-2 rounded-2xl flex items-center gap-3">
+                        <i class="fa-solid fa-stopwatch text-amber-400 text-2xl animate-spin" style="animation-duration: 8s;" aria-hidden="true"></i>
+                        <div>
+                            <span class="text-[10px] text-slate-400 block">الوقت المتبقي</span>
+                            <span id="speedTimer" class="text-2xl font-black text-amber-300 font-mono">45</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="speedStartArea" class="text-center py-12">
+                    <div class="w-24 h-24 mx-auto mb-4 bg-gradient-to-tr from-cyan-500 to-blue-600 rounded-full flex items-center justify-center text-4xl text-white shadow-xl shadow-cyan-500/20 animate-bounce-short" aria-hidden="true">
+                        <i class="fa-solid fa-bolt"></i>
+                    </div>
+                    <h3 class="text-2xl font-black text-white mb-2">هل أنت مستعد للتحدي؟</h3>
+                    <p class="text-slate-300 text-sm max-w-md mx-auto mb-6">
+                        لديك 45 ثانية للإجابة على أسئلة متنوعة في القيمة المنزلية والصيغة التحليلية واللفظية!
+                    </p>
+                    <button type="button" onclick="startSpeedGame()" class="bg-gradient-to-r from-amber-500 to-yellow-400 hover:from-amber-400 hover:to-yellow-300 text-slate-950 font-black text-lg px-8 py-3.5 rounded-2xl shadow-xl transition active:scale-95">
+                        <i class="fa-solid fa-play" aria-hidden="true"></i> ابدأ التحدي الآن
+                    </button>
+                </div>
+
+                <div id="speedQuizArea" class="hidden">
+                    <div class="bg-slate-900/90 rounded-2xl p-6 border-2 border-cyan-500/40 text-center max-w-2xl mx-auto my-4">
+                        <span id="speedQuestionType" class="text-xs font-bold text-cyan-400 bg-cyan-950 px-3 py-1 rounded-full inline-block mb-3 border border-cyan-700">
+                            سؤال قيمة منزلية
+                        </span>
+                        <h3 id="speedQuestionText" class="text-xl sm:text-2xl font-black text-white mb-6 leading-relaxed">
+                        </h3>
+
+                        <div id="speedOptionsGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        </div>
+                    </div>
+                </div>
+
+                <div id="speedResultArea" class="hidden text-center py-8">
+                    <div class="bg-slate-900/90 border-2 border-amber-400 p-8 rounded-3xl max-w-md mx-auto shadow-2xl">
+                        <i class="fa-solid fa-award text-6xl text-amber-400 mb-4 animate-bounce" aria-hidden="true"></i>
+                        <h3 class="text-2xl font-black text-white mb-1">انتهى الوقت!</h3>
+                        <p class="text-slate-300 text-sm mb-4">أداء رائع في تفكيك وتحليل الأعداد!</p>
+
+                        <div class="bg-slate-950 p-4 rounded-xl space-y-2 mb-6">
+                            <div class="flex justify-between items-center text-sm">
+                                <span class="text-slate-400">الإجابات الصحيحة:</span>
+                                <span id="finalCorrectCount" class="font-bold text-emerald-400 text-lg">0</span>
+                            </div>
+                            <div class="flex justify-between items-center text-sm">
+                                <span class="text-slate-400">النقاط المكتسبة:</span>
+                                <span id="finalScoreGained" class="font-bold text-cyan-300 text-lg">0</span>
+                            </div>
+                        </div>
+
+                        <button type="button" onclick="startSpeedGame()" class="bg-cyan-600 hover:bg-cyan-500 text-white font-bold px-6 py-3 rounded-xl w-full transition">
+                            <i class="fa-solid fa-rotate-right" aria-hidden="true"></i> المحاولة مرة أخرى
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="w-full max-w-6xl mx-auto mt-6 text-center text-xs text-slate-400 py-3 border-t border-slate-800">
+        <p>مصمم للتعليم التفاعلي للرياضيات - الصف الرابع الابتدائي © 2026</p>
+        <p class="mt-1"><a href="index.html" class="text-amber-400 hover:underline">العودة إلى صفحة الأدوات</a></p>
+    </footer>
+
+    <script>
+        let soundEnabled = true;
+        let isAudioContextStarted = false;
+
+        let clickSynth, correctPolySynth, wrongSynth, popMembraneSynth, timerSynth, fanfareSynth;
+
+        function initAudioEngine() {
+            if (clickSynth) return;
+            if (typeof Tone === 'undefined') return;
+            try {
+                clickSynth = new Tone.Synth({
+                    oscillator: { type: 'triangle' },
+                    envelope: { attack: 0.005, decay: 0.08, sustain: 0, release: 0.05 }
+                }).toDestination();
+                clickSynth.volume.value = -8;
+
+                correctPolySynth = new Tone.PolySynth(Tone.Synth, {
+                    oscillator: { type: 'sine' },
+                    envelope: { attack: 0.01, decay: 0.2, sustain: 0.1, release: 0.3 }
+                }).toDestination();
+                correctPolySynth.volume.value = -4;
+
+                wrongSynth = new Tone.Synth({
+                    oscillator: { type: 'sawtooth' },
+                    envelope: { attack: 0.01, decay: 0.25, sustain: 0, release: 0.1 }
+                }).toDestination();
+                wrongSynth.volume.value = -6;
+
+                popMembraneSynth = new Tone.MembraneSynth({
+                    pitchDecay: 0.05,
+                    octaves: 4,
+                    envelope: { attack: 0.001, decay: 0.12, sustain: 0, release: 0.1 }
+                }).toDestination();
+                popMembraneSynth.volume.value = -6;
+
+                timerSynth = new Tone.MembraneSynth({
+                    pitchDecay: 0.01,
+                    octaves: 2,
+                    envelope: { attack: 0.001, decay: 0.05, sustain: 0, release: 0.05 }
+                }).toDestination();
+                timerSynth.volume.value = -12;
+
+                fanfareSynth = new Tone.PolySynth(Tone.Synth, {
+                    oscillator: { type: 'triangle' },
+                    envelope: { attack: 0.02, decay: 0.3, sustain: 0.2, release: 0.5 }
+                }).toDestination();
+                fanfareSynth.volume.value = -2;
+
+            } catch (e) {
+                console.log("Audio Engine Initialization Exception:", e);
+            }
+        }
+
+        async function ensureAudioContext() {
+            if (!isAudioContextStarted) {
+                if (typeof Tone === 'undefined') return;
+                try {
+                    await Tone.start();
+                    isAudioContextStarted = true;
+                    initAudioEngine();
+                } catch(e) {}
+            }
+        }
+
+        function toggleAudio(e) {
+            if (e) e.stopPropagation();
+            soundEnabled = !soundEnabled;
+            const icon = document.getElementById('soundIcon');
+            const btn = document.getElementById('soundToggleBtn');
+            btn.setAttribute('aria-pressed', String(soundEnabled));
+
+            if (soundEnabled) {
+                icon.className = 'fa-solid fa-volume-high text-lg';
+                btn.classList.remove('text-slate-500');
+                btn.classList.add('text-amber-400');
+                playClickSound();
+            } else {
+                icon.className = 'fa-solid fa-volume-xmark text-lg';
+                btn.classList.remove('text-amber-400');
+                btn.classList.add('text-slate-500');
+            }
+        }
+
+        function playClickSound() {
+            if (!soundEnabled) return;
+            ensureAudioContext();
+            try { clickSynth.triggerAttackRelease("E5", "16n"); } catch(e){}
+        }
+
+        function playDigitStepSound(isUp) {
+            if (!soundEnabled) return;
+            ensureAudioContext();
+            try {
+                const note = isUp ? "C5" : "G4";
+                popMembraneSynth.triggerAttackRelease(note, "16n");
+            } catch(e){}
+        }
+
+        function playCardPopSound() {
+            if (!soundEnabled) return;
+            ensureAudioContext();
+            try { popMembraneSynth.triggerAttackRelease("A4", "16n"); } catch(e){}
+        }
+
+        function playCorrectSound() {
+            if (!soundEnabled) return;
+            ensureAudioContext();
+            try {
+                const now = Tone.now();
+                correctPolySynth.triggerAttackRelease("C5", "16n", now);
+                correctPolySynth.triggerAttackRelease("E5", "16n", now + 0.08);
+                correctPolySynth.triggerAttackRelease("G5", "16n", now + 0.16);
+                correctPolySynth.triggerAttackRelease("C6", "8n", now + 0.24);
+            } catch(e){}
+        }
+
+        function playWrongSound() {
+            if (!soundEnabled) return;
+            ensureAudioContext();
+            try {
+                const now = Tone.now();
+                wrongSynth.triggerAttackRelease("G3", "16n", now);
+                wrongSynth.triggerAttackRelease("C3", "8n", now + 0.12);
+            } catch(e){}
+        }
+
+        function playTimerTickSound() {
+            if (!soundEnabled) return;
+            ensureAudioContext();
+            try { timerSynth.triggerAttackRelease("A3", "32n"); } catch(e){}
+        }
+
+        function playFanfareSound() {
+            if (!soundEnabled) return;
+            ensureAudioContext();
+            try {
+                const now = Tone.now();
+                fanfareSynth.triggerAttackRelease(["C4", "E4", "G4"], "8n", now);
+                fanfareSynth.triggerAttackRelease(["G4", "C5", "E5"], "8n", now + 0.2);
+                fanfareSynth.triggerAttackRelease(["C5", "E5", "G5", "C6"], "4n", now + 0.4);
+            } catch(e){}
+        }
+
+        function triggerConfetti() {
+            try {
+                if (typeof confetti === 'function') {
+                    confetti({
+                        particleCount: 70,
+                        spread: 80,
+                        origin: { y: 0.6 }
+                    });
+                }
+            } catch(e){}
+        }
+
+        let totalStars = 0;
+        let totalScore = 0;
+
+        function addScore(points, stars = 1) {
+            totalScore += points;
+            totalStars += stars;
+            document.getElementById('scoreCount').innerText = totalScore;
+            document.getElementById('starCount').innerText = totalStars;
+        }
+
+        function switchTab(tabId) {
+            playClickSound();
+            document.querySelectorAll('.tab-section').forEach(sec => sec.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('bg-amber-500', 'text-slate-950', 'shadow-lg');
+                btn.classList.add('bg-slate-800/80', 'text-slate-200');
+                btn.setAttribute('aria-pressed', 'false');
+            });
+
+            document.getElementById('sec-' + tabId).classList.remove('hidden');
+            const activeBtn = document.getElementById('tab-' + tabId);
+            activeBtn.classList.remove('bg-slate-800/80', 'text-slate-200');
+            activeBtn.classList.add('bg-amber-500', 'text-slate-950', 'shadow-lg');
+            activeBtn.setAttribute('aria-pressed', 'true');
+
+            // Leaving the speed tab mid-round pauses/resets the timed challenge
+            if (tabId !== 'speed' && speedRunning) {
+                clearInterval(speedTimerInterval);
+                speedRunning = false;
+                document.getElementById('speedQuizArea').classList.add('hidden');
+                document.getElementById('speedResultArea').classList.add('hidden');
+                document.getElementById('speedStartArea').classList.remove('hidden');
+            }
+
+            if (tabId === 'hunter') initHunterGame();
+            if (tabId === 'builder') startNewBuilderRound();
+        }
+
+        const placeNames = [
+            'آحاد', 'عشرات', 'مئات',
+            'أحاد الألوف', 'عشرات الألوف', 'مئات الألوف'
+        ];
+
+        const placeColors = [
+            'border-red-500 text-red-400 bg-red-950/30',
+            'border-orange-500 text-orange-400 bg-orange-950/30',
+            'border-yellow-500 text-yellow-400 bg-yellow-950/30',
+            'border-emerald-500 text-emerald-400 bg-emerald-950/30',
+            'border-cyan-500 text-cyan-400 bg-cyan-950/30',
+            'border-purple-500 text-purple-400 bg-purple-950/30'
+        ];
+
+        let currentLabValue = 472305;
+
+        function toEnglishDigits(str) {
+            if (str === null || str === undefined) return '';
+            return String(str)
+                .replace(/[\u0660-\u0669]/g, d => String(d.charCodeAt(0) - 0x0660))
+                .replace(/[\u06F0-\u06F9]/g, d => String(d.charCodeAt(0) - 0x06F0));
+        }
+
+        function sanitizeNumericInput(str) {
+            return toEnglishDigits(str).replace(/[^0-9]/g, '');
+        }
+
+        function updateLabDisplay(updateInput = true) {
+            if (currentLabValue > 999999) currentLabValue = 999999;
+            if (currentLabValue < 0 || !Number.isFinite(currentLabValue)) currentLabValue = 0;
+
+            if (updateInput) {
+                document.getElementById('labNumberInput').value = currentLabValue;
+            }
+
+            const str = currentLabValue.toString().padStart(6, '0');
+            const digits = str.split('').map(Number);
+
+            for (let i = 0; i < 6; i++) {
+                const digitValue = digits[5 - i];
+                document.getElementById(`digit-${i}`).innerText = digitValue;
+            }
+
+            document.getElementById('displayStandardForm').innerText = currentLabValue.toLocaleString('en-US');
+
+            let expandedArr = [];
+            for (let i = 5; i >= 0; i--) {
+                const val = digits[5 - i] * Math.pow(10, i);
+                if (val > 0) {
+                    expandedArr.push(val.toLocaleString('en-US'));
+                }
+            }
+            document.getElementById('displayExpandedForm').innerText = expandedArr.length > 0 ? expandedArr.join(' + ') : '0';
+            document.getElementById('displayWordForm').innerText = numberToArabicWords(currentLabValue);
+
+            renderPlaceValueCards(digits);
+        }
+
+        function changeDigit(placeIndex, delta) {
+            playDigitStepSound(delta > 0);
+            const str = currentLabValue.toString().padStart(6, '0');
+            let digits = str.split('').map(Number);
+            let currentDigit = digits[5 - placeIndex];
+
+            let newDigit = currentDigit + delta;
+            if (newDigit > 9) newDigit = 0;
+            if (newDigit < 0) newDigit = 9;
+
+            digits[5 - placeIndex] = newDigit;
+            currentLabValue = parseInt(digits.join(''), 10);
+            updateLabDisplay(true);
+        }
+
+        function updateLabFromInput(val) {
+            const englishNumStr = sanitizeNumericInput(val);
+            if (englishNumStr === '') {
+                currentLabValue = 0;
+                updateLabDisplay(false);
+                return;
+            }
+            let num = parseInt(englishNumStr, 10);
+            if (isNaN(num)) num = 0;
+            currentLabValue = Math.min(num, 999999);
+            updateLabDisplay(false);
+        }
+
+        function generateRandomLabNumber() {
+            playCardPopSound();
+            currentLabValue = Math.floor(Math.random() * 900000) + 100000;
+            updateLabDisplay(true);
+        }
+
+        function renderPlaceValueCards(digits) {
+            const container = document.getElementById('placeValueCardsContainer');
+            container.innerHTML = '';
+
+            for (let i = 0; i <= 5; i++) {
+                const digit = digits[5 - i];
+                const placeVal = digit * Math.pow(10, i);
+                const colorClass = placeColors[i];
+
+                const card = document.createElement('div');
+                card.className = `border rounded-xl p-3 text-center transition hover:scale-105 ${colorClass}`;
+
+                const placeEl = document.createElement('div');
+                placeEl.className = 'text-[11px] opacity-80 mb-1';
+                placeEl.textContent = placeNames[i];
+
+                const digitEl = document.createElement('div');
+                digitEl.className = 'text-xl font-black mb-1';
+                digitEl.textContent = String(digit);
+
+                const valueEl = document.createElement('div');
+                valueEl.className = 'text-xs font-mono font-bold bg-slate-900/80 rounded py-0.5';
+                valueEl.dir = 'ltr';
+                valueEl.textContent = placeVal.toLocaleString('en-US');
+
+                card.appendChild(placeEl);
+                card.appendChild(digitEl);
+                card.appendChild(valueEl);
+                container.appendChild(card);
+            }
+        }
+
+        function numberToArabicWords(num) {
+            if (num === 0) return 'صفر';
+
+            const ones = ['', 'واحد', 'اثنان', 'ثلاثة', 'أربعة', 'خمسة', 'ستة', 'سبعة', 'ثمانية', 'تسعة'];
+            const tens = ['', 'عشرة', 'عشرون', 'ثلاثون', 'أربعون', 'خمسون', 'ستون', 'سبعون', 'ثمانون', 'تسعون'];
+            const teens = ['عشرة', 'أحد عشر', 'إثنا عشر', 'ثلاثة عشر', 'أربعة عشر', 'خمسة عشر', 'ستة عشر', 'سبعة عشر', 'ثمانية عشر', 'تسعة عشر'];
+            const hundreds = ['', 'مائة', 'مائتان', 'ثلاثمائة', 'أربعمائة', 'خمسمائة', 'ستمائة', 'سبعمائة', 'ثمانمائة', 'تسعمائة'];
+
+            function convertGroup(n) {
+                let h = Math.floor(n / 100);
+                let r = n % 100;
+                let t = Math.floor(r / 10);
+                let o = r % 10;
+
+                let parts = [];
+                if (h > 0) parts.push(hundreds[h]);
+
+                if (r > 0) {
+                    if (r >= 10 && r < 20) {
+                        parts.push(teens[r - 10]);
+                    } else {
+                        if (o > 0) parts.push(ones[o]);
+                        if (t > 0) parts.push(tens[t]);
+                    }
+                }
+                return parts.join(' و');
+            }
+
+            let thousands = Math.floor(num / 1000);
+            let units = num % 1000;
+            let resultParts = [];
+
+            if (thousands > 0) {
+                const r = thousands % 100; // the last counted part decides the noun form
+                if (thousands === 1) {
+                    resultParts.push('ألف');
+                } else if (thousands === 2) {
+                    resultParts.push('ألفان');
+                } else if (r >= 11 && r <= 99) {
+                    // e.g. 472 -> أربعمائة واثنان وسبعون ألفاً
+                    resultParts.push(convertGroup(thousands) + ' ألفاً');
+                } else if (r >= 3 && r <= 10) {
+                    // e.g. 5 -> خمسة آلاف ، 110 -> مائة وعشرة آلاف
+                    resultParts.push(convertGroup(thousands) + ' آلاف');
+                } else {
+                    // e.g. 100 -> مائة ألف
+                    resultParts.push(convertGroup(thousands) + ' ألف');
+                }
+            }
+
+            if (units > 0) {
+                resultParts.push(convertGroup(units));
+            }
+
+            return resultParts.join(' و');
+        }
+
+        function speakWordForm() {
+            playClickSound();
+            const text = document.getElementById('displayWordForm').innerText;
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const msg = new SpeechSynthesisUtterance(text);
+                msg.lang = 'ar';
+                msg.rate = 0.85;
+                window.speechSynthesis.speak(msg);
+            }
+        }
+
+        let hunterStreak = 0;
+        let hunterLevel = 1;
+        let hunterLocked = false;
+        let hunterCurrentTarget = {
+            fullNumber: 0,
+            digit: 0,
+            placeIndex: 0,
+            correctValue: 0
+        };
+
+        function initHunterGame() {
+            generateHunterQuestion();
+        }
+
+        function buildPlaceValueChoices(correctVal, digit, exponent, placeCount) {
+            const choices = new Set([correctVal]);
+            let attempts = 0;
+
+            while (choices.size < 4 && attempts < 300) {
+                attempts++;
+                const strategy = attempts % 3;
+                let cand;
+
+                if (strategy === 0) {
+                    // Same digit, different place
+                    const rExp = Math.floor(Math.random() * placeCount);
+                    cand = digit * Math.pow(10, rExp);
+                } else if (strategy === 1) {
+                    // Different digit, same place (handles digit 0 safely)
+                    let d = digit + (Math.random() < 0.5 ? 1 : -1);
+                    if (d < 0) d = digit + 1;
+                    if (d > 9) d = digit - 1;
+                    cand = d * Math.pow(10, exponent);
+                } else {
+                    // Different digit and different place
+                    const d = Math.floor(Math.random() * 10);
+                    const rExp = Math.floor(Math.random() * placeCount);
+                    cand = d * Math.pow(10, rExp);
+                }
+
+                if (Number.isFinite(cand) && cand >= 0 && cand !== correctVal) {
+                    choices.add(cand);
+                }
+            }
+
+            // Deterministic fallback so the loop can never stall
+            let fill = correctVal === 0 ? 1 : correctVal;
+            let guard = 0;
+            while (choices.size < 4 && guard < 50) {
+                guard++;
+                fill = fill + 1;
+                if (fill !== correctVal) choices.add(fill);
+            }
+
+            return Array.from(choices).sort(() => Math.random() - 0.5);
+        }
+
+        function generateHunterQuestion() {
+            hunterLocked = false;
+            const num = Math.floor(Math.random() * 899999) + 100000;
+            const str = num.toString();
+
+            const targetIdx = Math.floor(Math.random() * 6);
+            const targetDigit = parseInt(str[targetIdx], 10);
+            const exponent = 5 - targetIdx;
+            const correctVal = targetDigit * Math.pow(10, exponent);
+
+            hunterCurrentTarget = {
+                fullNumber: num,
+                digit: targetDigit,
+                placeIndex: exponent,
+                correctValue: correctVal
+            };
+
+            let htmlDigits = '';
+            for (let i = 0; i < str.length; i++) {
+                if (i === 3) htmlDigits += ' <span class="text-slate-500">,</span> ';
+                if (i === targetIdx) {
+                    htmlDigits += `<span class="inline-block text-amber-400 bg-amber-500/20 px-2 py-1 rounded-xl border-2 border-amber-400 animate-pulse">${str[i]}</span>`;
+                } else {
+                    htmlDigits += `<span>${str[i]}</span>`;
+                }
+            }
+            document.getElementById('hunterNumberDisplay').innerHTML = htmlDigits;
+            document.getElementById('hunterPlaceHint').innerText = `المنزلة: ${placeNames[exponent]}`;
+
+            const choicesArray = buildPlaceValueChoices(correctVal, targetDigit, exponent, 6);
+
+            const grid = document.getElementById('hunterOptionsGrid');
+            grid.innerHTML = '';
+            document.getElementById('hunterFeedback').className = 'hidden';
+
+            choicesArray.forEach(val => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'bg-slate-800 hover:bg-slate-700 text-amber-300 font-mono font-black text-xl sm:text-2xl p-4 rounded-2xl border-2 border-slate-600 transition hover:border-amber-400 shadow-lg active:scale-95';
+                btn.innerText = val.toLocaleString('en-US');
+                btn.setAttribute('aria-label', 'القيمة ' + val.toLocaleString('en-US'));
+                btn.onclick = () => checkHunterAnswer(val, btn);
+                grid.appendChild(btn);
+            });
+        }
+
+        function checkHunterAnswer(selectedVal, btnElement) {
+            if (hunterLocked || btnElement.disabled) return;
+
+            const feedback = document.getElementById('hunterFeedback');
+            feedback.classList.remove('hidden');
+
+            if (selectedVal === hunterCurrentTarget.correctValue) {
+                hunterLocked = true;
+                playCorrectSound();
+                triggerConfetti();
+                btnElement.classList.add('bg-emerald-600', 'border-emerald-400', 'text-white');
+
+                hunterStreak++;
+                addScore(100, 1);
+
+                if (hunterStreak % 3 === 0) hunterLevel++;
+
+                document.getElementById('hunterStreak').innerText = `${hunterStreak} 🔥`;
+                document.getElementById('hunterLevel').innerText = hunterLevel;
+
+                feedback.className = 'rounded-xl p-4 text-center font-bold text-lg bg-emerald-950/80 border border-emerald-500 text-emerald-300 mt-4';
+                feedback.innerHTML = '<i class="fa-solid fa-circle-check"></i> إجابة صحيحة ممتازة! +100 نقطة';
+
+                document.querySelectorAll('#hunterOptionsGrid button').forEach(b => b.disabled = true);
+
+                setTimeout(() => {
+                    generateHunterQuestion();
+                }, 1500);
+
+            } else {
+                playWrongSound();
+                btnElement.classList.add('bg-rose-600', 'border-rose-400', 'text-white', 'opacity-50');
+                btnElement.disabled = true;
+                hunterStreak = 0;
+                document.getElementById('hunterStreak').innerText = '0 🔥';
+
+                feedback.className = 'rounded-xl p-4 text-center font-bold text-lg bg-rose-950/80 border border-rose-500 text-rose-300 mt-4';
+                feedback.innerHTML = `<i class="fa-solid fa-circle-xmark"></i> حاول مرة أخرى! القيمة الصحيحة هي ${hunterCurrentTarget.correctValue.toLocaleString('en-US')}`;
+            }
+        }
+
+        let builderTarget = 0;
+        let builderSelectedCards = [];
+        let builderCorrectParts = [];
+
+        function startNewBuilderRound() {
+            builderTarget = Math.floor(Math.random() * 899999) + 100000;
+            document.getElementById('builderTargetNumber').innerText = builderTarget.toLocaleString('en-US');
+
+            const str = builderTarget.toString().padStart(6, '0');
+            const digits = str.split('').map(Number);
+
+            builderCorrectParts = [];
+            for (let i = 5; i >= 0; i--) {
+                const val = digits[5 - i] * Math.pow(10, i);
+                if (val > 0) builderCorrectParts.push(val);
+            }
+
+            let pool = [...builderCorrectParts];
+
+            let attempts = 0;
+            while (pool.length < 9 && attempts < 500) {
+                attempts++;
+                const randDigit = Math.floor(Math.random() * 9) + 1;
+                const randExp = Math.floor(Math.random() * 6);
+                const distractor = randDigit * Math.pow(10, randExp);
+                if (!pool.includes(distractor)) {
+                    pool.push(distractor);
+                }
+            }
+
+            pool.sort(() => Math.random() - 0.5);
+
+            builderSelectedCards = [];
+            renderBuilderSlots();
+            renderBuilderPool(pool);
+            document.getElementById('builderFeedback').className = 'hidden';
+        }
+
+        function renderBuilderPool(pool) {
+            const container = document.getElementById('builderCardsPool');
+            container.innerHTML = '';
+
+            pool.forEach(val => {
+                const card = document.createElement('button');
+                card.type = 'button';
+                card.className = 'bg-slate-800 hover:bg-slate-700 text-emerald-300 font-mono font-bold text-lg sm:text-xl p-3 rounded-xl border border-slate-600 transition active:scale-95 shadow';
+                card.innerText = val.toLocaleString('en-US');
+                card.dataset.value = String(val);
+                card.setAttribute('aria-label', 'أضف القيمة ' + val.toLocaleString('en-US'));
+                card.onclick = () => selectBuilderCard(val, card);
+                container.appendChild(card);
+            });
+        }
+
+        function selectBuilderCard(val, btnElement) {
+            playCardPopSound();
+            if (!builderSelectedCards.includes(val)) {
+                builderSelectedCards.push(val);
+                btnElement.classList.add('opacity-40', 'pointer-events-none');
+                btnElement.disabled = true;
+                renderBuilderSlots();
+            }
+        }
+
+        function removeBuilderCard(val) {
+            playClickSound();
+            const idx = builderSelectedCards.indexOf(val);
+            if (idx === -1) return;
+            builderSelectedCards.splice(idx, 1);
+
+            document.querySelectorAll('#builderCardsPool button').forEach(btn => {
+                if (btn.dataset && btn.dataset.value === String(val)) {
+                    btn.classList.remove('opacity-40', 'pointer-events-none');
+                    btn.disabled = false;
+                }
+            });
+            renderBuilderSlots();
+        }
+
+        function renderBuilderSlots() {
+            const container = document.getElementById('builderSlotContainer');
+            container.innerHTML = '';
+            if (builderSelectedCards.length === 0) {
+                const hint = document.createElement('span');
+                hint.className = 'text-slate-500 italic text-sm';
+                hint.dir = 'rtl';
+                hint.textContent = 'انقر الأرقام بالأسفل للإضافة...';
+                container.appendChild(hint);
+                return;
+            }
+
+            builderSelectedCards.forEach((val, idx) => {
+                if (idx > 0) {
+                    const plus = document.createElement('span');
+                    plus.className = 'text-amber-400 font-bold text-xl';
+                    plus.textContent = '+';
+                    plus.setAttribute('aria-hidden', 'true');
+                    container.appendChild(plus);
+                }
+                const chip = document.createElement('button');
+                chip.type = 'button';
+                chip.className = 'bg-emerald-900/80 border border-emerald-400 text-emerald-200 px-3 py-1.5 rounded-lg text-lg font-bold shadow hover:bg-rose-900/60 hover:border-rose-400 transition';
+                chip.innerText = val.toLocaleString('en-US');
+                chip.title = 'انقر لإزالة هذه القيمة';
+                chip.setAttribute('aria-label', 'إزالة القيمة ' + val.toLocaleString('en-US'));
+                chip.onclick = () => removeBuilderCard(val);
+                container.appendChild(chip);
+            });
+        }
+
+        function clearBuilderSelection() {
+            playClickSound();
+            builderSelectedCards = [];
+            renderBuilderSlots();
+            document.querySelectorAll('#builderCardsPool button').forEach(btn => {
+                btn.classList.remove('opacity-40', 'pointer-events-none');
+                btn.disabled = false;
+            });
+        }
+
+        function checkBuilderAnswer() {
+            const feedback = document.getElementById('builderFeedback');
+            feedback.classList.remove('hidden');
+
+            const currentSum = builderSelectedCards.reduce((a, b) => a + b, 0);
+
+            if (currentSum === builderTarget && builderSelectedCards.length === builderCorrectParts.length) {
+                playCorrectSound();
+                triggerConfetti();
+                addScore(150, 2);
+
+                feedback.className = 'rounded-xl p-4 text-center font-bold text-lg bg-emerald-950/80 border border-emerald-500 text-emerald-300 mt-4';
+                feedback.innerHTML = '<i class="fa-solid fa-trophy"></i> ممتاز! قمت بتركيب الصيغة التحليلية بنجاح! +150 نقطة';
+
+                document.querySelectorAll('#builderCardsPool button').forEach(btn => btn.disabled = true);
+
+                setTimeout(() => {
+                    startNewBuilderRound();
+                }, 2000);
+
+            } else {
+                playWrongSound();
+                feedback.className = 'rounded-xl p-4 text-center font-bold text-lg bg-rose-950/80 border border-rose-500 text-rose-300 mt-4';
+                feedback.innerHTML = '<i class="fa-solid fa-circle-exclamation"></i> الصيغة المجمعة غير صحيحة، حاول اختيار الخانات المناسبة من جديد!';
+            }
+        }
+
+        let speedTimerInterval;
+        let speedTimeLeft = 45;
+        let speedCorrectCount = 0;
+        let speedScoreGained = 0;
+        let speedRunning = false;
+        let speedLocked = false;
+        let currentSpeedQuestion = null;
+
+        function startSpeedGame() {
+            playClickSound();
+            speedTimeLeft = 45;
+            speedCorrectCount = 0;
+            speedScoreGained = 0;
+            speedRunning = true;
+            speedLocked = false;
+
+            document.getElementById('speedStartArea').classList.add('hidden');
+            document.getElementById('speedResultArea').classList.add('hidden');
+            document.getElementById('speedQuizArea').classList.remove('hidden');
+            document.getElementById('speedTimer').innerText = speedTimeLeft;
+
+            clearInterval(speedTimerInterval);
+            speedTimerInterval = setInterval(() => {
+                speedTimeLeft--;
+                document.getElementById('speedTimer').innerText = speedTimeLeft;
+
+                if (speedTimeLeft <= 5 && speedTimeLeft > 0) {
+                    playTimerTickSound();
+                }
+
+                if (speedTimeLeft <= 0) {
+                    clearInterval(speedTimerInterval);
+                    endSpeedGame();
+                }
+            }, 1000);
+
+            generateSpeedQuestion();
+        }
+
+        function getExpandedParts(num) {
+            const str = num.toString().padStart(6, '0');
+            const digits = str.split('').map(Number);
+            const parts = [];
+            for (let i = 5; i >= 0; i--) {
+                const val = digits[5 - i] * Math.pow(10, i);
+                if (val > 0) parts.push(val);
+            }
+            return parts;
+        }
+
+        function buildExpandedChoices(num) {
+            const parts = getExpandedParts(num);
+            const correctText = parts.map(v => v.toLocaleString('en-US')).join(' + ');
+            const options = new Set([correctText]);
+
+            let attempts = 0;
+            while (options.size < 4 && attempts < 400) {
+                attempts++;
+                const str = num.toString().padStart(6, '0').split('').map(Number);
+                const place = Math.floor(Math.random() * 6);
+                let d = Math.floor(Math.random() * 10);
+                if (d === str[5 - place]) d = (d + 1 + Math.floor(Math.random() * 8)) % 10;
+                str[5 - place] = d;
+
+                const wrongParts = [];
+                for (let i = 5; i >= 0; i--) {
+                    const val = str[5 - i] * Math.pow(10, i);
+                    if (val > 0) wrongParts.push(val);
+                }
+                if (wrongParts.length === 0) continue;
+
+                const wrongText = wrongParts.map(v => v.toLocaleString('en-US')).join(' + ');
+                if (wrongText !== correctText) options.add(wrongText);
+            }
+
+            // One "missing part" distractor when the number has several parts
+            if (parts.length > 1 && options.size < 4) {
+                const missing = parts.slice(0, -1).map(v => v.toLocaleString('en-US')).join(' + ');
+                if (missing && missing !== correctText) options.add(missing);
+            }
+
+            // Deterministic fallback
+            let fillN = num + 10000;
+            let guard = 0;
+            while (options.size < 4 && guard < 50) {
+                guard++;
+                const t = getExpandedParts(fillN).map(v => v.toLocaleString('en-US')).join(' + ');
+                if (t && t !== correctText) options.add(t);
+                fillN += 10000;
+            }
+
+            return Array.from(options).sort(() => Math.random() - 0.5);
+        }
+
+        function generateSpeedQuestion() {
+            speedLocked = false;
+            const qType = Math.floor(Math.random() * 3);
+            const num = Math.floor(Math.random() * 899999) + 100000;
+
+            if (qType === 0) {
+                const digitsStr = num.toString();
+                const randIdx = Math.floor(Math.random() * 6);
+                const digit = parseInt(digitsStr[randIdx], 10);
+                const exp = 5 - randIdx;
+                const correctVal = digit * Math.pow(10, exp);
+
+                currentSpeedQuestion = {
+                    typeText: 'القيمة المنزلية',
+                    text: `ما هي القيمة المنزلية للرقم <span class="text-yellow-300 font-bold">${digit}</span> في العدد <span class="text-cyan-300 font-mono">${num.toLocaleString('en-US')}</span>؟`,
+                    correct: correctVal.toLocaleString('en-US'),
+                    options: buildPlaceValueChoices(correctVal, digit, exp, 6).map(v => v.toLocaleString('en-US'))
+                };
+            } else if (qType === 1) {
+                const parts = getExpandedParts(num);
+                const correctText = parts.map(v => v.toLocaleString('en-US')).join(' + ');
+
+                currentSpeedQuestion = {
+                    typeText: 'الصيغة التحليلية',
+                    text: `ما هي الصيغة التحليلية الصحيحة للعدد <span class="text-cyan-300 font-mono">${num.toLocaleString('en-US')}</span>؟`,
+                    correct: correctText,
+                    options: buildExpandedChoices(num)
+                };
+            } else {
+                const wordForm = numberToArabicWords(num);
+                currentSpeedQuestion = {
+                    typeText: 'الصيغة اللفظية',
+                    text: `ما هو العدد المنطوق: "<span class="text-amber-300">${wordForm}</span>"؟`,
+                    correct: num.toLocaleString('en-US'),
+                    options: [
+                        num.toLocaleString('en-US'),
+                        (num + 1000).toLocaleString('en-US'),
+                        (num - 100).toLocaleString('en-US'),
+                        (num * 10).toLocaleString('en-US')
+                    ].sort(() => Math.random() - 0.5)
+                };
+            }
+
+            renderSpeedQuestion();
+        }
+
+        function renderSpeedQuestion() {
+            document.getElementById('speedQuestionType').innerText = currentSpeedQuestion.typeText;
+            document.getElementById('speedQuestionText').innerHTML = currentSpeedQuestion.text;
+
+            const grid = document.getElementById('speedOptionsGrid');
+            grid.innerHTML = '';
+
+            currentSpeedQuestion.options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'bg-slate-800 hover:bg-slate-700 text-slate-100 font-bold p-4 rounded-xl border border-slate-600 transition active:scale-95 text-sm sm:text-base shadow';
+                btn.innerHTML = `<span dir="ltr" class="inline-block">${opt}</span>`;
+                btn.onclick = () => answerSpeedQuestion(opt, btn);
+                grid.appendChild(btn);
+            });
+        }
+
+        function answerSpeedQuestion(selectedOpt, btn) {
+            if (speedLocked || !speedRunning) return;
+            speedLocked = true;
+
+            document.querySelectorAll('#speedOptionsGrid button').forEach(b => b.disabled = true);
+
+            if (selectedOpt === currentSpeedQuestion.correct) {
+                playCorrectSound();
+                speedCorrectCount++;
+                speedScoreGained += 50;
+                addScore(50, 1);
+                btn.classList.add('bg-emerald-600', 'text-white', 'border-emerald-400');
+            } else {
+                playWrongSound();
+                btn.classList.add('bg-rose-600', 'text-white', 'border-rose-400');
+
+                // Reveal the correct option
+                document.querySelectorAll('#speedOptionsGrid button').forEach(b => {
+                    const label = b.textContent.trim();
+                    if (label === currentSpeedQuestion.correct) {
+                        b.classList.add('bg-emerald-600', 'text-white', 'border-emerald-400');
+                    }
+                });
+            }
+
+            setTimeout(() => {
+                if (speedRunning && speedTimeLeft > 0) generateSpeedQuestion();
+            }, 450);
+        }
+
+        function endSpeedGame() {
+            speedRunning = false;
+            speedLocked = true;
+            playFanfareSound();
+            triggerConfetti();
+            document.getElementById('speedQuizArea').classList.add('hidden');
+            document.getElementById('speedResultArea').classList.remove('hidden');
+
+            document.getElementById('finalCorrectCount').innerText = speedCorrectCount;
+            document.getElementById('finalScoreGained').innerText = speedScoreGained;
+        }
+
+        window.addEventListener('load', function() {
+            updateLabDisplay(true);
+            initHunterGame();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="dark">
+    <meta name="theme-color" content="#0f172a">
+    <title>أبطال جدول الضرب - رحلة المهارة والتميز</title>
+    <meta name="description" content="لعبة تعليمية تفاعلية لتعلّم وحفظ جدول الضرب من 1 إلى 12: أسئلة متعددة الخيارات مع مؤقّت ونجوم وأوسمة وتحديات تحفيزية، مناسبة للطلاب والصفوف الابتدائية.">
+    <meta name="keywords" content="جدول الضرب, رياضيات, تعليم, لعبة, الصف الرابع, ضرب">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="أبطال جدول الضرب - رحلة المهارة والتميز">
+    <meta property="og:description" content="لعبة تعليمية تفاعلية لتعلّم جدول الضرب: اختر الجدول، اجمع النجوم، وافرِز أوسمة الإنجاز.">
+    <link rel="icon" type="image/svg+xml" href="assets/images/favicon.svg">
+    <link rel="apple-touch-icon" href="assets/images/favicon.svg">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.tailwindcss.com">
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <!-- Google Fonts: Tajawal & Cairo -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <!-- Tone.js for Sound Effects -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            400: '#38bdf8',
+                            500: '#0284c7',
+                            600: '#0369a1',
+                            700: '#075985',
+                        },
+                        accent: {
+                            yellow: '#f59e0b',
+                            purple: '#8b5cf6',
+                            green: '#10b981',
+                            pink: '#ec4899'
+                        }
+                    },
+                    fontFamily: {
+                        cairo: ['Cairo', 'sans-serif'],
+                        tajawal: ['Tajawal', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #311042 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+            user-select: none;
+            overflow-x: hidden;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .glass-button {
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            transition: all 0.2s ease-in-out;
+        }
+
+        .glass-button:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .glass-button:active {
+            transform: translateY(1px);
+        }
+
+        .option-btn {
+            transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .option-btn:hover {
+            transform: scale(1.03);
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 15px rgba(56, 189, 248, 0.4); }
+            50% { box-shadow: 0 0 30px rgba(236, 72, 153, 0.7); }
+        }
+
+        .glowing-hero {
+            animation: pulse-glow 3s infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(2deg); }
+        }
+
+        .floating {
+            animation: float 4s ease-in-out infinite;
+        }
+
+        .star-shine {
+            animation: spin 8s linear infinite;
+        }
+
+        @keyframes spin {
+            100% { transform: rotate(360deg); }
+        }
+
+        :focus-visible {
+            outline: 3px solid #f59e0b;
+            outline-offset: 2px;
+        }
+
+        button:disabled {
+            cursor: not-allowed;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.6);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #38bdf8;
+            border-radius: 4px;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .floating, .glowing-hero, .star-shine, .animate-ping, .animate-bounce {
+                animation: none !important;
+            }
+            * {
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+<body class="flex flex-col justify-between min-h-screen p-2 md:p-6 relative">
+
+    <!-- Canvas Background Effect -->
+    <canvas id="bgCanvas" class="fixed top-0 left-0 w-full h-full pointer-events-none z-0 opacity-40" aria-hidden="true"></canvas>
+
+    <!-- Main Top Header -->
+    <header class="relative z-10 w-full max-w-5xl mx-auto flex flex-wrap items-center justify-between gap-4 p-4 rounded-2xl glass-card mb-4">
+        <div class="flex items-center gap-3">
+            <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-amber-400 to-amber-600 flex items-center justify-center text-2xl shadow-lg transform rotate-3" aria-hidden="true">
+                <i class="fa-solid fa-crown text-slate-900"></i>
+            </div>
+            <div>
+                <h1 class="text-xl md:text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-sky-300 to-pink-400">
+                    <a href="index.html" class="hover:underline">أبطال جدول الضرب</a>
+                </h1>
+                <p class="text-xs text-slate-300">مغامرة الرياضيات الشيقة والمحفزة!</p>
+            </div>
+        </div>
+
+        <!-- Dashboard Stats -->
+        <div class="flex items-center gap-3 text-sm font-bold">
+            <div class="flex items-center gap-1.5 bg-amber-500/20 border border-amber-500/40 px-3 py-1.5 rounded-xl text-amber-300">
+                <i class="fa-solid fa-star text-amber-400 text-lg floating" aria-hidden="true"></i>
+                <span>النجوم:</span>
+                <span id="totalStars" aria-live="polite">0</span>
+            </div>
+
+            <div class="flex items-center gap-1.5 bg-sky-500/20 border border-sky-500/40 px-3 py-1.5 rounded-xl text-sky-300">
+                <i class="fa-solid fa-fire text-orange-400 text-lg" aria-hidden="true"></i>
+                <span class="sr-only">السلسلة:</span>
+                <span id="streakCount" aria-live="polite">0</span>
+            </div>
+
+            <button type="button" id="soundToggleBtn" onclick="toggleAudio()" class="w-10 h-10 rounded-xl glass-button flex items-center justify-center text-amber-300 hover:text-white" title="تشغيل/إيقاف الصوت" aria-label="تشغيل أو إيقاف الصوت" aria-pressed="true">
+                <i id="soundIcon" class="fa-solid fa-volume-high" aria-hidden="true"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Dynamic Application Container -->
+    <main class="relative z-10 w-full max-w-5xl mx-auto flex-1 flex flex-col justify-center my-2">
+
+        <!-- SCREEN 1: Home & Table Selection -->
+        <div id="screenHome" class="flex flex-col items-center text-center space-y-6">
+            <!-- Hero Banner -->
+            <div class="glass-card p-6 md:p-8 rounded-3xl w-full max-w-3xl border border-sky-500/30 glowing-hero relative overflow-hidden">
+                <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-pink-500/20 rounded-full blur-2xl pointer-events-none" aria-hidden="true"></div>
+                <div class="absolute -left-10 -top-10 w-40 h-40 bg-sky-500/20 rounded-full blur-2xl pointer-events-none" aria-hidden="true"></div>
+
+                <div class="inline-block px-4 py-1.5 rounded-full bg-amber-400/20 border border-amber-400/40 text-amber-300 text-xs font-bold mb-3">
+                    <i class="fa-solid fa-wand-magic-sparkles ml-1" aria-hidden="true"></i> تعلم واحترف جدول الضرب بإتقان!
+                </div>
+                <h2 class="text-2xl md:text-4xl font-black mb-3 leading-snug">
+                    اختر الجدول الذي تريد أن تصبح <span class="text-amber-400 underline decoration-sky-400">بطلاً فيه</span>!
+                </h2>
+                <p class="text-sm md:text-base text-slate-300 max-w-xl mx-auto mb-6">
+                    تحدَّ نفسك، اجمع النجوم، وافرِز أوسمة الإنجاز. اجعل أرقام جدول الضرب حليفتك الذكية!
+                </p>
+
+                <!-- Tables Grid (1 - 12) -->
+                <div id="tablesGrid" class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3 mb-6">
+                    <!-- Dynamic Buttons Generated in JS -->
+                </div>
+
+                <!-- Mixed Challenge Button -->
+                <div class="flex flex-wrap justify-center gap-3">
+                    <button type="button" onclick="selectTable('all')" class="bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-slate-950 font-black px-6 py-3.5 rounded-2xl shadow-lg flex items-center gap-2 transform hover:-translate-y-1 transition">
+                        <i class="fa-solid fa-bolt text-lg" aria-hidden="true"></i>
+                        <span>تحدي جميع الجداول الشامل</span>
+                    </button>
+
+                    <button type="button" onclick="openMotivationalQuiz()" class="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-black px-6 py-3.5 rounded-2xl shadow-lg flex items-center gap-2 transform hover:-translate-y-1 transition">
+                        <i class="fa-solid fa-brain text-lg" aria-hidden="true"></i>
+                        <span>الأسئلة التحفيزية والألغاز</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Motivational Banner / Daily Quote -->
+            <div class="glass-card p-4 rounded-2xl w-full max-w-3xl flex items-center gap-3 border border-amber-400/20">
+                <div class="w-10 h-10 rounded-xl bg-amber-400/20 flex items-center justify-center text-amber-400 text-lg flex-shrink-0" aria-hidden="true">
+                    <i class="fa-solid fa-lightbulb"></i>
+                </div>
+                <div class="text-right">
+                    <h4 class="text-xs font-bold text-amber-300">حكمة اليوم للعباقرة:</h4>
+                    <p id="motivationalQuote" class="text-xs md:text-sm text-slate-200">"الرياضيات ليست مجرد أرقام، بل هي القوة الخارقة التي تساعدك على حل كل الألغاز!"</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SCREEN 2: Multiplication Arena Game -->
+        <div id="screenGame" class="hidden flex-col items-center text-center space-y-4">
+
+            <!-- Game Top Info Bar -->
+            <div class="w-full max-w-2xl glass-card px-6 py-3 rounded-2xl flex items-center justify-between flex-wrap gap-3">
+                <button type="button" onclick="goHome()" class="text-xs bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded-xl border border-slate-600 text-slate-300 flex items-center gap-1">
+                    <i class="fa-solid fa-arrow-right" aria-hidden="true"></i> القائمة الرئيسية
+                </button>
+
+                <div class="flex items-center gap-2">
+                    <span class="text-xs text-sky-300">السؤال:</span>
+                    <span id="questionCounter" class="font-bold text-amber-400">1 / 10</span>
+                </div>
+
+                <!-- Timer Indicator -->
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-clock text-amber-400 text-sm" aria-hidden="true"></i>
+                    <span class="text-xs text-slate-300">الوقت:</span>
+                    <span id="timerDisplay" class="font-mono font-bold text-lg text-white" aria-live="off">15</span>
+                </div>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="w-full max-w-2xl bg-slate-800/80 h-3 rounded-full overflow-hidden border border-slate-700" role="progressbar" aria-label="تقدم الأسئلة" aria-valuemin="0" aria-valuemax="10" aria-valuenow="0" id="progressBarWrap">
+                <div id="progressBar" class="h-full bg-gradient-to-r from-sky-400 via-amber-400 to-green-400 w-0 transition-all duration-300"></div>
+            </div>
+
+            <!-- Question Card -->
+            <div class="glass-card p-6 sm:p-8 rounded-3xl w-full max-w-2xl border border-sky-400/40 relative shadow-2xl overflow-hidden">
+                <div id="feedbackBadge" class="hidden absolute top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full text-xs font-black bg-emerald-500 text-slate-950 animate-bounce" role="status">
+                    ممتاز! إجابة بطل!
+                </div>
+
+                <!-- Avatar / Character Graphic -->
+                <div class="w-20 h-20 mx-auto mb-4 rounded-3xl bg-gradient-to-tr from-sky-500 to-indigo-600 flex items-center justify-center text-4xl shadow-lg floating" aria-hidden="true">
+                    <i id="heroIcon" class="fa-solid fa-robot text-amber-300"></i>
+                </div>
+
+                <p class="text-xs text-sky-300 font-semibold mb-2" id="questionSubtitle">ما هو حاصل ضرب العوامل التالية؟</p>
+
+                <!-- Equation Display -->
+                <div class="flex items-center justify-center gap-3 sm:gap-4 text-3xl sm:text-4xl md:text-6xl font-black mb-8 text-white">
+                    <span id="numA" class="text-sky-400">7</span>
+                    <span class="text-amber-400" aria-hidden="true">×</span>
+                    <span id="numB" class="text-pink-400">8</span>
+                    <span class="text-slate-400" aria-hidden="true">=</span>
+                    <span class="text-amber-300 font-mono">؟</span>
+                </div>
+
+                <!-- Options Grid -->
+                <div id="optionsGrid" class="grid grid-cols-2 gap-3 sm:gap-4">
+                    <!-- Dynamic option buttons in JS -->
+                </div>
+            </div>
+
+            <!-- Motivational Message Box -->
+            <div id="encouragementBox" class="glass-card p-3 rounded-xl w-full max-w-2xl text-xs md:text-sm text-amber-200 border border-amber-400/30 flex items-center justify-center gap-2">
+                <i class="fa-solid fa-face-smile-wink text-amber-400 text-lg" aria-hidden="true"></i>
+                <span id="encouragementText">ركز جيداً، أنت قادر على حلها بكل سهولة!</span>
+            </div>
+        </div>
+
+        <!-- SCREEN 3: Motivational & Reflection Quiz -->
+        <div id="screenMotivationalQuiz" class="hidden flex-col items-center text-center space-y-4">
+            <div class="glass-card p-6 md:p-8 rounded-3xl w-full max-w-2xl border border-purple-500/40 relative">
+                <button type="button" onclick="goHome()" class="absolute top-4 right-4 text-xs bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded-xl border border-slate-600 text-slate-300">
+                    <i class="fa-solid fa-xmark" aria-hidden="true"></i> إغلاق
+                </button>
+
+                <div class="w-16 h-16 mx-auto mb-3 rounded-2xl bg-purple-600/30 border border-purple-400 flex items-center justify-center text-purple-300 text-3xl" aria-hidden="true">
+                    <i class="fa-solid fa-brain"></i>
+                </div>
+
+                <h3 class="text-xl font-black text-amber-300 mb-2">تحدي الذكاء والتفكير الإيجابي</h3>
+                <p class="text-xs text-slate-300 mb-6">أسئلة تجمع بين مفاهيم الرياضيات والتفكير المنطقي والتحفيز الذاتي!</p>
+
+                <!-- Motivational Question Card -->
+                <div class="bg-slate-900/60 p-5 rounded-2xl border border-slate-700 text-right mb-6">
+                    <span id="motivationalTag" class="inline-block px-3 py-1 bg-purple-500/20 text-purple-300 text-xs font-bold rounded-lg mb-2">
+                        سؤال ذكاء وتحفيز
+                    </span>
+                    <h4 id="mQuestionText" class="text-base md:text-lg font-bold text-white mb-3">
+                        إذا كان لديك 4 صناديق وفي كل صندوق 6 نجمات متلألئة، كم نجمة تملك إجمالاً؟ وكيف تشعر عندما تحل هذه المسألة؟
+                    </h4>
+                    <div id="mOptionsContainer" class="space-y-2">
+                        <!-- Dynamic Options Generated Here -->
+                    </div>
+                </div>
+
+                <div class="flex justify-between items-center text-xs text-slate-400">
+                    <span id="mQuizProgress">سؤال 1 من 5</span>
+                    <button type="button" id="nextMQuizBtn" onclick="nextMotivationalQuestion()" class="hidden bg-purple-600 hover:bg-purple-500 text-white px-5 py-2 rounded-xl font-bold">
+                        السؤال التالي <i class="fa-solid fa-arrow-left mr-1" aria-hidden="true"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- SCREEN 4: Game Result & Celebration Screen -->
+        <div id="screenResult" class="hidden flex-col items-center text-center space-y-6">
+            <div class="glass-card p-6 sm:p-8 rounded-3xl w-full max-w-xl border border-amber-400/50 shadow-2xl relative overflow-hidden mx-auto">
+                <div class="w-24 h-24 mx-auto rounded-full bg-gradient-to-tr from-amber-400 to-yellow-200 flex items-center justify-center text-slate-950 text-5xl mb-4 shadow-xl floating" aria-hidden="true">
+                    <i class="fa-solid fa-trophy"></i>
+                </div>
+
+                <h2 id="resultTitle" class="text-2xl md:text-3xl font-black text-amber-300 mb-2">إنجاز رائع يا بطل!</h2>
+                <p id="resultSubtitle" class="text-sm text-slate-200 mb-6">لقد أثبتّ مهارة عالية في جدول الضرب!</p>
+
+                <!-- Score Details Card -->
+                <div class="grid grid-cols-3 gap-3 bg-slate-900/80 p-4 rounded-2xl border border-slate-700 mb-6">
+                    <div>
+                        <div class="text-xs text-slate-400">الإجابات الصحيحة</div>
+                        <div id="resCorrect" class="text-xl md:text-2xl font-black text-emerald-400">8 / 10</div>
+                    </div>
+                    <div>
+                        <div class="text-xs text-slate-400">النجوم المكتسبة</div>
+                        <div id="resStars" class="text-xl md:text-2xl font-black text-amber-400">+15 ⭐</div>
+                    </div>
+                    <div>
+                        <div class="text-xs text-slate-400">النسبة المئوية</div>
+                        <div id="resPercentage" class="text-xl md:text-2xl font-black text-sky-400">80%</div>
+                    </div>
+                </div>
+
+                <!-- Personal Motivational Feedback -->
+                <div id="resultMotivation" class="p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-200 text-sm font-semibold mb-6">
+                    "استمر في التدرب! الرياضيات هي مفتاح العباقرة لاكتشاف العالم."
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex justify-center gap-3 flex-wrap">
+                    <button type="button" onclick="replayCurrentMode()" class="bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold px-6 py-3 rounded-xl flex items-center gap-2">
+                        <i class="fa-solid fa-rotate-right" aria-hidden="true"></i> إعادة التحدي
+                    </button>
+                    <button type="button" onclick="goHome()" class="bg-slate-700 hover:bg-slate-600 text-white font-bold px-6 py-3 rounded-xl flex items-center gap-2">
+                        <i class="fa-solid fa-house" aria-hidden="true"></i> القائمة الرئيسية
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="relative z-10 w-full max-w-5xl mx-auto text-center py-3 text-xs text-slate-400 border-t border-slate-800 mt-4">
+        <p>مصمم بأسلوب تفاعلي ومحفز للطلاب لتعزيز مهارات الرياضيات وحفظ جدول الضرب بسهولة. ✨</p>
+        <p class="mt-1"><a href="index.html" class="text-sky-400 hover:underline">العودة إلى صفحة الأدوات</a></p>
+    </footer>
+
+    <!-- Custom Notification Toast -->
+    <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 hidden bg-slate-900 text-white border border-amber-400/50 px-6 py-3 rounded-2xl shadow-2xl text-xs md:text-sm font-bold flex items-center gap-2" role="status" aria-live="polite">
+        <i id="toastIcon" class="fa-solid fa-star text-amber-400" aria-hidden="true"></i>
+        <span id="toastMsg">تم كسب وسام جديد!</span>
+    </div>
+
+    <!-- JavaScript Game Engine Logic -->
+    <script>
+        // Audio Controls & Synthesizer Setup using Tone.js
+        let audioEnabled = true;
+        let synth, polySynth;
+
+        function initAudio() {
+            try {
+                if (typeof Tone === 'undefined') return;
+                if (!synth) {
+                    synth = new Tone.Synth().toDestination();
+                    polySynth = new Tone.PolySynth(Tone.Synth).toDestination();
+                }
+            } catch(e) {
+                console.log("Audio Init Warning:", e);
+            }
+        }
+
+        function playSound(type) {
+            if (!audioEnabled) return;
+            if (typeof Tone === 'undefined') return;
+            try {
+                Tone.start();
+                initAudio();
+                const now = Tone.now();
+
+                if (type === 'correct') {
+                    // Cheerful Arpeggio
+                    polySynth.triggerAttackRelease(["C5", "E5", "G5", "C6"], "8n", now);
+                } else if (type === 'wrong') {
+                    // Gentle Low Buzz
+                    synth.triggerAttackRelease("G2", "8n", now);
+                } else if (type === 'click') {
+                    // Quick Soft Click
+                    synth.triggerAttackRelease("C4", "16n", now);
+                } else if (type === 'win') {
+                    // Victory Fanfare
+                    polySynth.triggerAttackRelease(["C4", "E4", "G4", "C5"], "4n", now);
+                    polySynth.triggerAttackRelease(["G4", "B4", "D5", "G5"], "4n", now + 0.25);
+                }
+            } catch(e) {
+                // Fallback quiet handle
+            }
+        }
+
+        function toggleAudio() {
+            audioEnabled = !audioEnabled;
+            const icon = document.getElementById('soundIcon');
+            const btn = document.getElementById('soundToggleBtn');
+            btn.setAttribute('aria-pressed', String(audioEnabled));
+            if (audioEnabled) {
+                icon.className = 'fa-solid fa-volume-high';
+                btn.classList.remove('opacity-50');
+                showToast("تم تشغيل الصوت", "fa-volume-high");
+            } else {
+                icon.className = 'fa-solid fa-volume-xmark';
+                btn.classList.add('opacity-50');
+                showToast("تم إيقاف الصوت", "fa-volume-xmark");
+            }
+        }
+
+        // Persistent stars (safe in private mode / blocked storage)
+        function loadStoredStars() {
+            try {
+                const v = parseInt(localStorage.getItem('math_stars'), 10);
+                return (Number.isFinite(v) && v >= 0) ? v : 0;
+            } catch (e) {
+                return 0;
+            }
+        }
+
+        function persistStars() {
+            try {
+                localStorage.setItem('math_stars', String(totalStars));
+            } catch (e) { /* storage unavailable: keep in-memory score */ }
+        }
+
+        // Game State Variables
+        let totalStars = loadStoredStars();
+        let streak = 0;
+        let currentTable = 1;
+        let currentQuestionIndex = 0;
+        let totalQuestions = 10;
+        let correctAnswersCount = 0;
+        let timerInterval = null;
+        let timeLeft = 15;
+        let currentQuestionsList = [];
+        let motivationalQuizIndex = 0;
+        let motivationalScore = 0;
+        let questionLocked = false;
+
+        // Quotes for Motivation
+        const quotes = [
+            "الرياضيات ليست مجرد أرقام، بل هي القوة الخارقة التي تساعدك على حل كل الألغاز!",
+            "كل مسألة تحلها تجعل عقلك أقوى وأسرع بمقدار خطوة!",
+            "الخطأ هو معلمك الأول نحو النجاح، استمر في المحاولة!",
+            "أنت أسرع ذكاءً مما تتخيل، ثق بنفسك وبقدراتك الممتازة!",
+            "حفظ جدول الضرب يفتح لك أبواب التفوق في العلوم والتكنولوجيا!"
+        ];
+
+        // Encouragement sayings during game
+        const encouragements = [
+            "رائع! أنت تسير بخطى ثابته نحو القمة!",
+            "إجابة ذكية جدًا، واصل التألق!",
+            "ممتاز! جدول الضرب أصبح لعبة سهلة بالنسبة لك!",
+            "يا لك من بطل! تركيزك اليوم عالي ومبهر!",
+            "استجابة سريعة ودقيقة، أنت عبقري!"
+        ];
+
+        // Motivational Quiz Data
+        const motivationalQuestions = [
+            {
+                q: "إذا صممت 5 سفن فضائية وفي كل سفينة 7 رواد فضاء، كم رائد فضاء يستكشف المريخ معك؟ وماذا تقول لنفسك عندما تنجز ذلك؟",
+                options: [
+                    { text: "35 رائد فضاء - وأقول لنفسي: أنا قادِر على تحقيق أهدافي بالعمل والتركيز!", correct: true },
+                    { text: "30 رائد فضاء - الأرقام صعبة للغاية", correct: false },
+                    { text: "40 رائد فضاء - لا يهمني العدد", correct: false }
+                ],
+                tag: "مسألة الفضاء والتركيز"
+            },
+            {
+                q: "عندما تواجه مسألة ضرب صعبة في الاختبار، ما هو التصرف الذكي للبطل؟",
+                options: [
+                    { text: "أتوقف وأتنفس بهدوء، وأتذكر الجداول المجاورة لأصل للحل الصحيح", correct: true },
+                    { text: "أستسلم ولا أحاول التفكير", correct: false },
+                    { text: "أختار أي رقم عشوائي بسرعة بدون تفكير", correct: false }
+                ],
+                tag: "استراتيجيات التفكير"
+            },
+            {
+                q: "لديك 6 شجيرات زيتون، وكل شجرة تثمر 9 ثمار ذهبية. كيف يساعدك الضرب (6 × 9) في معرفة المحصول فوراً؟",
+                options: [
+                    { text: "يعطيني 54 ثمرة فوراً بدون الحاجة للعد الواحدة تلو الأخرى!", correct: true },
+                    { text: "يجعلني أعد الثمار واحدة واحدة لمدة طويلة", correct: false },
+                    { text: "النتيجة هي 45 ثمرة فقط", correct: false }
+                ],
+                tag: "فائدة الضرب في الحياة"
+            },
+            {
+                q: "ما هو شعورك عندما تتمرن على جدول الضرب يومياً لمدة 5 دقائق؟",
+                options: [
+                    { text: "أشعر بالفخر لأن عقلي يصبح أقوى وأسرع في البديهة مع كل تدريب!", correct: true },
+                    { text: "لا يتغير شيء في عقلي", correct: false },
+                    { text: "التدريب ليس مفيداً", correct: false }
+                ],
+                tag: "قوة العادة والتكرار"
+            },
+            {
+                q: "إذا وضعت هدفاً أن تحفظ جميع جداول الضرب من 1 إلى 10، فما هي الخطة الناجحة؟",
+                options: [
+                    { text: "حفظ جدول واحد كل يوم بتأنٍ ومراجعته مع اللعب والمرح!", correct: true },
+                    { text: "محاولة حفظ كل الجداول في ساعة واحدة بدون راحة", correct: false },
+                    { text: "تأجيل الحفظ دائماً وعدم البدء أبداً", correct: false }
+                ],
+                tag: "التخطيط والتفوق"
+            }
+        ];
+
+        // Initialize App
+        window.addEventListener('load', () => {
+            buildTableButtons();
+            updateDashboardStars();
+            showRandomQuote();
+            initBackgroundCanvas();
+        });
+
+        function buildTableButtons() {
+            const grid = document.getElementById('tablesGrid');
+            grid.innerHTML = '';
+            for (let i = 1; i <= 12; i++) {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'table-select-btn glass-button p-3 rounded-2xl flex flex-col items-center justify-center gap-1 hover:border-amber-400 group';
+                btn.setAttribute('aria-label', 'ابدأ تحدي جدول الضرب ' + i);
+
+                const label = document.createElement('span');
+                label.className = 'text-xs text-sky-300 font-semibold';
+                label.textContent = 'جدول';
+
+                const num = document.createElement('span');
+                num.className = 'text-2xl font-black group-hover:scale-125 transition-transform text-white';
+                num.textContent = String(i);
+
+                btn.appendChild(label);
+                btn.appendChild(num);
+                btn.addEventListener('click', () => selectTable(i));
+                grid.appendChild(btn);
+            }
+        }
+
+        function updateDashboardStars() {
+            document.getElementById('totalStars').innerText = totalStars;
+            persistStars();
+        }
+
+        function showRandomQuote() {
+            const rand = Math.floor(Math.random() * quotes.length);
+            document.getElementById('motivationalQuote').innerText = `"${quotes[rand]}"`;
+        }
+
+        function showToast(msg, icon = 'fa-star') {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMsg').innerText = msg;
+            document.getElementById('toastIcon').className = `fa-solid ${icon} text-amber-400`;
+            toast.classList.remove('hidden');
+            setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 3000);
+        }
+
+        // Screen Navigation Functions
+        function hideAllScreens() {
+            ['screenHome', 'screenGame', 'screenMotivationalQuiz', 'screenResult'].forEach(id => {
+                const el = document.getElementById(id);
+                el.classList.add('hidden');
+                el.classList.remove('flex');
+            });
+            clearInterval(timerInterval);
+        }
+
+        function showScreen(id) {
+            const el = document.getElementById(id);
+            el.classList.remove('hidden');
+            el.classList.add('flex');
+        }
+
+        function goHome() {
+            playSound('click');
+            questionLocked = true;
+            hideAllScreens();
+            showScreen('screenHome');
+            showRandomQuote();
+        }
+
+        // Start Table Challenge
+        function selectTable(tableNum) {
+            playSound('click');
+            currentTable = tableNum;
+            generateQuestionList();
+            currentQuestionIndex = 0;
+            correctAnswersCount = 0;
+            streak = 0;
+            document.getElementById('streakCount').innerText = streak;
+
+            hideAllScreens();
+            showScreen('screenGame');
+
+            loadQuestion();
+        }
+
+        function generateQuestionList() {
+            currentQuestionsList = [];
+            for (let i = 0; i < totalQuestions; i++) {
+                let numA, numB;
+                if (currentTable === 'all') {
+                    numA = Math.floor(Math.random() * 10) + 2; // 2 to 11
+                    numB = Math.floor(Math.random() * 12) + 1; // 1 to 12
+                } else {
+                    numA = currentTable;
+                    numB = (i + 1) > 12 ? Math.floor(Math.random() * 12) + 1 : (i + 1);
+                }
+                currentQuestionsList.push({ a: numA, b: numB, ans: numA * numB });
+            }
+            // Shuffle
+            currentQuestionsList.sort(() => Math.random() - 0.5);
+        }
+
+        function loadQuestion() {
+            if (currentQuestionIndex >= totalQuestions) {
+                finishGame();
+                return;
+            }
+
+            questionLocked = false;
+
+            // Update Counter & Progress
+            document.getElementById('questionCounter').innerText = `${currentQuestionIndex + 1} / ${totalQuestions}`;
+            const pct = ((currentQuestionIndex) / totalQuestions) * 100;
+            document.getElementById('progressBar').style.width = `${pct}%`;
+            document.getElementById('progressBarWrap').setAttribute('aria-valuenow', String(currentQuestionIndex));
+
+            const q = currentQuestionsList[currentQuestionIndex];
+            document.getElementById('numA').innerText = q.a;
+            document.getElementById('numB').innerText = q.b;
+
+            // Generate 4 Multiple Choice Options
+            const options = [q.ans];
+            let guard = 0;
+            while (options.length < 4 && guard < 1000) {
+                guard++;
+                // Generate close distractors
+                const offset = (Math.floor(Math.random() * 5) + 1) * (Math.random() < 0.5 ? 1 : -1);
+                const wrongAns = q.ans + offset;
+                if (wrongAns > 0 && !options.includes(wrongAns)) {
+                    options.push(wrongAns);
+                }
+            }
+            // Shuffle Options
+            options.sort(() => Math.random() - 0.5);
+
+            // Render Option Buttons
+            const grid = document.getElementById('optionsGrid');
+            grid.innerHTML = '';
+            options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'option-btn glass-button p-4 md:p-5 rounded-2xl text-2xl md:text-3xl font-black text-white hover:border-amber-400 hover:text-amber-300 flex items-center justify-center';
+                btn.innerText = opt;
+                btn.setAttribute('aria-label', 'الإجابة ' + opt);
+                btn.onclick = () => checkAnswer(opt, q.ans, btn);
+                grid.appendChild(btn);
+            });
+
+            // Encouragement message
+            const randEnc = encouragements[Math.floor(Math.random() * encouragements.length)];
+            document.getElementById('encouragementText').innerText = randEnc;
+
+            // Reset and Start Timer
+            startTimer();
+        }
+
+        function disableAllOptionButtons() {
+            document.querySelectorAll('.option-btn').forEach(b => {
+                b.disabled = true;
+                b.classList.remove('hover:border-amber-400', 'hover:text-amber-300');
+            });
+        }
+
+        function startTimer() {
+            clearInterval(timerInterval);
+            timeLeft = 15;
+            document.getElementById('timerDisplay').innerText = timeLeft;
+            document.getElementById('timerDisplay').className = "font-mono font-bold text-lg text-white";
+
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                document.getElementById('timerDisplay').innerText = timeLeft;
+
+                if (timeLeft <= 5) {
+                    document.getElementById('timerDisplay').className = "font-mono font-bold text-lg text-rose-400 animate-ping";
+                }
+
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    if (questionLocked) return;
+                    questionLocked = true;
+                    disableAllOptionButtons();
+                    playSound('wrong');
+                    highlightCorrectOption(currentQuestionsList[currentQuestionIndex].ans);
+                    setTimeout(() => {
+                        currentQuestionIndex++;
+                        streak = 0;
+                        document.getElementById('streakCount').innerText = streak;
+                        loadQuestion();
+                    }, 1500);
+                }
+            }, 1000);
+        }
+
+        function checkAnswer(selected, correct, btnElement) {
+            if (questionLocked) return;
+            questionLocked = true;
+            clearInterval(timerInterval);
+
+            if (selected === correct) {
+                playSound('correct');
+                btnElement.classList.add('bg-emerald-500/80', 'border-emerald-400', 'text-white', 'scale-105');
+                correctAnswersCount++;
+                streak++;
+                totalStars += 2;
+                updateDashboardStars();
+                document.getElementById('streakCount').innerText = streak;
+
+                // Trigger Confetti Blast for streaks
+                if (streak % 3 === 0) {
+                    triggerConfetti();
+                    showToast(`سلسلة إجابات ممتازة! 🔥 ${streak} متتالية!`, 'fa-fire');
+                }
+
+                // Show Feedback Badge
+                const badge = document.getElementById('feedbackBadge');
+                badge.innerText = "ممتاز! إجابة صحيحة ⭐";
+                badge.classList.remove('hidden');
+                setTimeout(() => badge.classList.add('hidden'), 1200);
+
+            } else {
+                playSound('wrong');
+                btnElement.classList.add('bg-rose-600/80', 'border-rose-400', 'text-white');
+                streak = 0;
+                document.getElementById('streakCount').innerText = streak;
+
+                highlightCorrectOption(correct);
+            }
+
+            // Disable all option buttons
+            disableAllOptionButtons();
+
+            // Move to next question after delay
+            setTimeout(() => {
+                currentQuestionIndex++;
+                loadQuestion();
+            }, 1300);
+        }
+
+        function highlightCorrectOption(correctVal) {
+            const allBtns = document.querySelectorAll('.option-btn');
+            allBtns.forEach(b => {
+                if (parseInt(b.innerText, 10) === correctVal) {
+                    b.classList.add('bg-emerald-500/80', 'border-emerald-400', 'animate-pulse');
+                }
+            });
+        }
+
+        function finishGame() {
+            playSound('win');
+            triggerConfetti();
+            hideAllScreens();
+            showScreen('screenResult');
+
+            const pct = Math.round((correctAnswersCount / totalQuestions) * 100);
+            document.getElementById('resCorrect').innerText = `${correctAnswersCount} / ${totalQuestions}`;
+            document.getElementById('resPercentage').innerText = `${pct}%`;
+
+            // Per-answer stars (+2) are already added live during the game;
+            // award the performance bonus exactly once here.
+            let earnedStars = correctAnswersCount * 2;
+            if (pct >= 80) {
+                earnedStars += 5;
+                totalStars += 5;
+                updateDashboardStars();
+            }
+            document.getElementById('resStars').innerText = `+${earnedStars} ⭐`;
+
+            // Titles & Personal Messages
+            const titleEl = document.getElementById('resultTitle');
+            const motivEl = document.getElementById('resultMotivation');
+
+            if (pct === 100) {
+                titleEl.innerText = "👑 عبقري جدول الضرب الخارق!";
+                motivEl.innerText = "أداء أسطوري! لم تخطئ في أي سؤال. عُقول القمة تبنى بهذا الإتقان!";
+            } else if (pct >= 80) {
+                titleEl.innerText = "🌟 إنجاز ممتاز جداً يا بطل!";
+                motivEl.innerText = "أنت قريب جداً من النتيجة الكاملة! واصل التكرار لتصبح الأسرع دائماً.";
+            } else if (pct >= 50) {
+                titleEl.innerText = "👍 محاولة جيدة وتقدم ملحوظ!";
+                motivEl.innerText = "الممارسة هي سر النجاح في الرياضيات. حاول مرة أخرى وستحقق نتيجة أعلى!";
+            } else {
+                titleEl.innerText = "شجاع بالمحاولة! استمر في التعلم 💪";
+                motivEl.innerText = "كل بطل يمر بالتدريب، خذ استراحة قصيرة ثم واصل التمرين والتعلم!";
+            }
+        }
+
+        function replayCurrentMode() {
+            selectTable(currentTable);
+        }
+
+        /* Motivational Quiz Engine */
+        function openMotivationalQuiz() {
+            playSound('click');
+            motivationalQuizIndex = 0;
+            motivationalScore = 0;
+            hideAllScreens();
+            showScreen('screenMotivationalQuiz');
+            loadMotivationalQuestion();
+        }
+
+        function loadMotivationalQuestion() {
+            const data = motivationalQuestions[motivationalQuizIndex];
+            document.getElementById('mQuestionText').textContent = data.q;
+            document.getElementById('motivationalTag').textContent = data.tag;
+            document.getElementById('mQuizProgress').innerText = `سؤال ${motivationalQuizIndex + 1} من ${motivationalQuestions.length}`;
+            document.getElementById('nextMQuizBtn').classList.add('hidden');
+
+            const container = document.getElementById('mOptionsContainer');
+            container.innerHTML = '';
+
+            data.options.forEach((opt, idx) => {
+                const b = document.createElement('button');
+                b.type = 'button';
+                b.className = 'w-full text-right p-3.5 rounded-xl glass-button text-sm md:text-base font-semibold text-slate-100 hover:border-purple-400 hover:text-amber-300 transition flex items-start gap-2';
+
+                const badge = document.createElement('span');
+                badge.className = 'w-6 h-6 rounded-full bg-purple-500/30 flex items-center justify-center text-xs text-purple-300 flex-shrink-0 mt-0.5';
+                badge.textContent = String(idx + 1);
+
+                const text = document.createElement('span');
+                text.textContent = opt.text;
+
+                b.appendChild(badge);
+                b.appendChild(text);
+                b.onclick = () => selectMotivationalOption(opt, b);
+                container.appendChild(b);
+            });
+        }
+
+        function selectMotivationalOption(opt, btn) {
+            playSound(opt.correct ? 'correct' : 'wrong');
+
+            if (opt.correct) {
+                btn.classList.add('bg-emerald-600/80', 'border-emerald-400');
+                motivationalScore++;
+                totalStars += 3;
+                updateDashboardStars();
+            } else {
+                btn.classList.add('bg-rose-600/80', 'border-rose-400');
+            }
+
+            // Disable siblings
+            const container = document.getElementById('mOptionsContainer');
+            Array.from(container.children).forEach(c => c.disabled = true);
+
+            document.getElementById('nextMQuizBtn').classList.remove('hidden');
+        }
+
+        function nextMotivationalQuestion() {
+            playSound('click');
+            motivationalQuizIndex++;
+            if (motivationalQuizIndex < motivationalQuestions.length) {
+                loadMotivationalQuestion();
+            } else {
+                // Finish Motivational Quiz
+                triggerConfetti();
+                showToast("أحسنت! كسبت أوسمة تفكير إيجابي ونجوم إضافية! ⭐", "fa-brain");
+                goHome();
+            }
+        }
+
+        // Confetti Fireworks Effect
+        function triggerConfetti() {
+            if (typeof confetti === 'function') {
+                confetti({
+                    particleCount: 70,
+                    spread: 80,
+                    origin: { y: 0.6 }
+                });
+            }
+        }
+
+        // Animated Background Particle Stars Canvas
+        function initBackgroundCanvas() {
+            const canvas = document.getElementById('bgCanvas');
+            const ctx = canvas.getContext('2d');
+            if (!ctx) return;
+
+            const prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            if (prefersReduced) {
+                canvas.style.display = 'none';
+                return;
+            }
+
+            let width = canvas.width = window.innerWidth;
+            let height = canvas.height = window.innerHeight;
+
+            window.addEventListener('resize', () => {
+                width = canvas.width = window.innerWidth;
+                height = canvas.height = window.innerHeight;
+            });
+
+            const particles = [];
+            for (let i = 0; i < 45; i++) {
+                particles.push({
+                    x: Math.random() * width,
+                    y: Math.random() * height,
+                    radius: Math.random() * 2 + 1,
+                    vx: (Math.random() - 0.5) * 0.4,
+                    vy: (Math.random() - 0.5) * 0.4,
+                    alpha: Math.random()
+                });
+            }
+
+            function animate() {
+                ctx.clearRect(0, 0, width, height);
+                particles.forEach(p => {
+                    p.x += p.vx;
+                    p.y += p.vy;
+
+                    if (p.x < 0) p.x = width;
+                    if (p.x > width) p.x = 0;
+                    if (p.y < 0) p.y = height;
+                    if (p.y > height) p.y = 0;
+
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(251, 191, 36, ${p.alpha})`;
+                    ctx.fill();
+                });
+                requestAnimationFrame(animate);
+            }
+            animate();
+        }
+    </script>
+</body>
+</html>

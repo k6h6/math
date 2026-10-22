@@ -1,0 +1,23 @@
+# OS junk
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+.DS_Store
+
+# Editors / IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs & temp
+*.log
+*.tmp
+
+# Node (only if tooling is ever added; site itself is pure static)
+node_modules/
+
+# Secrets — never commit these
+.env
+.env.*
+*.pem
